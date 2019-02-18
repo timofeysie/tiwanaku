@@ -109,7 +109,6 @@ Trying out the code from the complete tut now because it's unwise to follow alon
 
 
 
-
 ## Object is possibly 'null'.ts(2531)
 
 The layout reducer has this code:
