@@ -14,9 +14,9 @@ const initialState: State = {
 export function reducer (
     state = initialState,
     action: layout.LayoutActions
-    ): State {
-        switch (action.type) {
-            default:
-                return state;
-    }
+    ): any {
+    //     switch (action.type) {
+    //         default:
+    //             return state;
+    // }
 }
