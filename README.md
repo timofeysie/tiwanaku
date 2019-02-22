@@ -1,17 +1,37 @@
 # Redux Layout
 
-An example of managing application UI layout using Angular with Redux [from an artilce](https://www.pluralsight.com/guides/ui-state-management-with-redux-in-angular-4) by [Hristo Georgiev](https://github.com/hggeorgiev).
+Examples of managing application state using Angular with Redux.
+
+UI state management [from an artilce](https://www.pluralsight.com/guides/ui-state-management-with-redux-in-angular-4) by [Hristo Georgiev](https://github.com/hggeorgiev).
+
+A [working example](https://github.com/SantiagoGdaR/angular-ngrx) from the [tutorial](https://medium.com/frontend-fun/angular-ngrx-a-clean-and-clear-introduction-4ed61c89c1fc) by [Santiago García Da Rosa](https://medium.com/@santiagogarcadarosa).
 
 
 ## Table of contents
 
-1. [Upgrading the source](#upgrading-the-source)
+
+1. [NgRx Working Example](#ngRx-Working-Example)
+1. [Redux UI State Management](#redux-UI-state-management)
 2. [JQuery and Bootstrap](#JQuery-and-Bootstrap)
 3. [Object is possibly 'null'.ts(2531)](#object-is-possibly-'null'.ts(2531))
 4. [Getting started](#getting-started)
 5. [Redux Layout Tutorial App readme](#redux-Layout-Tutorial-App-readme)
 
-## Upgrading the source
+
+## NgRx Working Example
+
+
+Currently working on the Santiago García Da Rosa [example](https://github.com/SantiagoGdaR/angular-ngrx).
+
+
+
+## Redux UI State Management
+
+In the georgiev-branch branch of this project is an example of managing application UI layout using Angular with Redux [from an artilce](https://www.pluralsight.com/guides/ui-state-management-with-redux-in-angular-4) by [Hristo Georgiev](https://github.com/hggeorgiev).
+
+It was a failed attempt to update the code but shows promise anyhow for managing the UI state of an Angular app using the Redux pattern implemented with NgRx.
+
+### Upgrading the source
 
 Although the date on the Pluralsight course is Dec 15, 2018, the project from the completed source has not been modified for two years.  What worked for Angular 4 with ngrx then doesn't work now due to breaking changes.
 
@@ -183,7 +203,7 @@ src/app/common/index.ts(18,9): error TS2305: Module '"../../../node_modules/@ang
 
 
 
-## JQuery and Bootstrap
+### JQuery and Bootstrap
 
 Had this issue the last time I installed Bootstrap as well.
 ```
@@ -244,7 +264,7 @@ Trying out the code from the complete tut now because it's unwise to follow alon
 
 
 
-## Object is possibly 'null'.ts(2531)
+### Object is possibly 'null'.ts(2531)
 
 The layout reducer has this code:
 ```
@@ -274,7 +294,7 @@ However, the existence of null has been described as The Billion Dollar Mistake 
 One way to fix this is to ensure that the values are never null or undefined.
 
 
-## Getting started
+### Getting started
 
 [This article](https://www.pluralsight.com/guides/building-a-redux-application-with-angular-2-part-1) was one option for getting started.  We can compare this version later.
 
@@ -302,7 +322,7 @@ To make development more convenient and easier to debug, add a store logger, whi
 yarn add ngrx-store-logger
 ```
 
-## Redux Layout Tutorial App readme
+### Redux Layout Tutorial App readme
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.2.
 
