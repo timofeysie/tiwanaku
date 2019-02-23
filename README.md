@@ -6,6 +6,16 @@ UI state management [from an artilce](https://www.pluralsight.com/guides/ui-stat
 
 A [working example](https://github.com/SantiagoGdaR/angular-ngrx) from the [tutorial](https://medium.com/frontend-fun/angular-ngrx-a-clean-and-clear-introduction-4ed61c89c1fc) by [Santiago García Da Rosa](https://medium.com/@santiagogarcadarosa).
 
+Other options for Angular that need to be looked at in this project are:
+```
+NGXS (where reducer + effects = state)
+Akita
+Mobx
+```
+
+The NgRx community is a lot larger, and sanctioned by the Angular team, so it makes sense to become familiar with that before branching out to other options.  The big problem is a lot of boilerplate code and a steep learning curve for new team members.  I would say that a simpler version of Redux is emerging but not yet a clear front runner.  Still I've enjoyed learning the NgRx implementations used in this project.
+
+
 
 ## Table of contents
 
@@ -22,6 +32,58 @@ A [working example](https://github.com/SantiagoGdaR/angular-ngrx) from the [tuto
 
 
 Currently working on the Santiago García Da Rosa [example](https://github.com/SantiagoGdaR/angular-ngrx).
+
+
+### Containers components and presentation components
+
+Santiago mentions an [article](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0) by [Dan Abramov](https://medium.com/@dan_abramov) about the container and presentation components pattern used in this example. There is a disclaimer at the top of this article now that says he doesn't recommend it anymore.  Anyhow, it's already implemented here and can help separate complex stateful logic from other aspects of the component, which is what this project is all about.
+
+There are other names for this patter, for example:
+```
+Container and Presentational
+Fat and Skinny
+Smart and Dumb
+Stateful and Pure
+Screens and Components
+```
+
+Hooks let you do the same thing without an arbitrary division, but that's for React.  Since this is an Angular project, we have to make our own.
+
+
+Some  notes on presentational components:
+```
+May contain presentational and container components, DOM markup and styles.
+Have no dependencies on the rest of the app, such as Flux actions or stores.
+Don’t specify how the data is loaded or mutated.
+Rarely have their own state (when they do, it’s UI state rather than data).
+Are written as functional components unless they need state, lifecycle hooks, or performance optimizations.
+```
+Examples: Page, Sidebar, Story, UserInfo, List.
+
+Container components:
+```
+Concerned with how things work.
+May have presentational and containers, but don’t have any DOM markup except for wrapping divs, and never have any styles.
+Provide the data and behavior to presentational or other container components.
+Call Flux actions and provide these as callbacks to the presentational components.
+Are often stateful, as they tend to serve as data sources.
+Are usually generated using higher order components such as connect() from React Redux, createContainer() from Relay, or Container.create() from Flux Utils, rather than written by hand.
+```
+
+Examples: UserPage, FollowersSidebar, StoryContainer, FollowedUserList.
+
+
+
+### switchMap/of vs map/Array
+
+Ben Elliott in the comments wondered if there is a specific reason why Santiago uses switchMap and of at the end of the operator chains in Effects because this wraps the value in an Observable and then immediately unwraps it.
+
+For example:
+```
+switchMap((config: IConfig) => {
+```
+
+Santiago replied that you can use map and Array.find as it might be better. The first he felt more comfortable and the second, using Array.filter, was not the best approach. 
 
 
 
