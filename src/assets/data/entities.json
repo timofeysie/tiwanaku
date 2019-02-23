@@ -1,0 +1,49 @@
+{
+  "entities": [
+    {
+      "id": 1,
+      "cognitive_bias": "http://www.wikidata.org/entity/Q29598",
+      "cognitive_biasDescription": "cognitive bias; an preference for the current state of affairs.",
+      "cognitive_biasLabel": "status quo bias",
+      "lang": "en",
+      "wikiMedia_label": "",
+      "wikiMedia_description": "",
+      "wikiMedia_category": "",
+      "sortName": "",
+      "detailState": "",
+      "descriptionState": "",
+      "itemState": "",
+      "backupTitle": ""
+    },
+    {
+      "id": 2,
+      "cognitive_bias": "http://www.wikidata.org/entity/Q29598",
+      "cognitive_biasDescription": "cognitive bias; an preference for the current state of affairs.",
+      "cognitive_biasLabel": "status quo bias",
+      "lang": "en",
+      "wikiMedia_label": "",
+      "wikiMedia_description": "",
+      "wikiMedia_category": "",
+      "sortName": "",
+      "detailState": "",
+      "descriptionState": "",
+      "itemState": "",
+      "backupTitle": ""
+    },
+    {
+      "id": 3,
+      "cognitive_bias": "http://www.wikidata.org/entity/Q29598",
+      "cognitive_biasDescription": "cognitive bias; an preference for the current state of affairs.",
+      "cognitive_biasLabel": "status quo bias",
+      "lang": "en",
+      "wikiMedia_label": "",
+      "wikiMedia_description": "",
+      "wikiMedia_category": "",
+      "sortName": "",
+      "detailState": "",
+      "descriptionState": "",
+      "itemState": "",
+      "backupTitle": ""
+    }
+  ]
+}

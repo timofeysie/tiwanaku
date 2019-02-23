@@ -10,32 +10,32 @@ import { appReducers } from './store/reducers/app.reducers';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { ConfigEffects } from './store/effects/config.effects';
-import { UserEffects } from './store/effects/user.effects';
+import { EntityEffects } from './store/effects/entity.effects';
 import { AppComponent } from './app.component';
-import { UserService } from './services/user.service';
-import { UsersComponent as UsersContainerComponent } from './containers/users/users.component';
-import { UsersComponent } from './components/users/users.component';
-import { UserComponent } from './containers/user/user.component';
-import { UserDetailsComponent } from './components/user-details/user-details.component';
+import { EntityService } from './services/entity.service';
+import { EntitiesComponent as EntitiesContainerComponent } from './containers/entities/entities.component';
+import { EntitiesComponent } from './components/entities/entities.component';
+import { EntityComponent } from './containers/entity/entity.component';
+import { EntityDetailsComponent } from './components/entity-details/entity-details.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    UsersContainerComponent,
-    UsersComponent,
-    UserComponent,
-    UserDetailsComponent
+    EntitiesContainerComponent,
+    EntitiesComponent,
+    EntityComponent,
+    EntityDetailsComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     StoreModule.forRoot(appReducers),
-    EffectsModule.forRoot([UserEffects, ConfigEffects]),
+    EffectsModule.forRoot([EntityEffects, ConfigEffects]),
     StoreRouterConnectingModule.forRoot({ stateKey: 'router' }),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     AppRoutingModule
   ],
-  providers: [UserService],
+  providers: [EntityService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

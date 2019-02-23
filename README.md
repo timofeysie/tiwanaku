@@ -1,4 +1,4 @@
-# Redux Layout
+# Tiwanaku
 
 Examples of managing application state using Angular with Redux.
 
@@ -17,6 +17,7 @@ The NgRx community is a lot larger, and sanctioned by the Angular team, so it ma
 
 
 
+
 ## Table of contents
 
 
@@ -26,6 +27,29 @@ The NgRx community is a lot larger, and sanctioned by the Angular team, so it ma
 3. [Object is possibly 'null'.ts(2531)](#object-is-possibly-'null'.ts(2531))
 4. [Getting started](#getting-started)
 5. [Redux Layout Tutorial App readme](#redux-Layout-Tutorial-App-readme)
+
+
+Entity example
+
+WikiData
+```
+cognitive_bias: "http://www.wikidata.org/entity/Q29598"
+cognitive_biasDescription: "cognitive bias; an preference for the current state of affairs."
+cognitive_biasLabel: "status quo bias"
+lang: "en"
+```
+
+WikiMedia
+```
+wikiMedia_label
+wikiMedia_description
+wikiMedia_category
+sortName
+detailState
+descriptionState
+itemState
+backupTitle
+```
 
 
 ## NgRx Working Example

@@ -1,17 +1,17 @@
 import { RouterReducerState } from '@ngrx/router-store';
 
-import { IUserState, initialUserState } from './user.state';
+import { IEntityState, initialEntityState } from './entity.state';
 import { initialConfigState, IConfigState } from './config.state';
 
 
 export interface IAppState {
   router?: RouterReducerState;
-  users: IUserState;
+  entities: IEntityState;
   config: IConfigState;
 }
 
 export const initialAppState: IAppState = {
-  users: initialUserState,
+  entities: initialEntityState,
   config: initialConfigState
 };
 
