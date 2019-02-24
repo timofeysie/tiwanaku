@@ -19,9 +19,11 @@ import { selectEntityList } from '../selectors/entity.selector';
 @Injectable()
 export class EntityEffects {
   @Effect()
-  getentity$ = this._actions$.pipe(
+  getEntity$ = this._actions$.pipe(
     ofType<GetEntity>(EEntityActions.GetEntity),
-    map(action => action.payload),
+    map((action) => {
+        action.payload
+    }),
     withLatestFrom(this._store.pipe(select(selectEntityList))),
     switchMap(([id, entities]) => {
       const selectedEntity = entities.filter(entity => entity.id === +id)[0];
