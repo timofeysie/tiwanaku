@@ -3,13 +3,16 @@
     <tr>
       <th scope="col">#</th>
       <th scope="col">Name</th>
+      <th scope="col">Description</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let entity of entities"
       (click)="navigateToEntity(entity.id)">
       <td>{{ entity.id }}</td>
-      <td>{{ entity.sortName }}</td>
+      <td>{{ entity.cognitive_biasLabel }}</td>
+      <td>{{ entity.cognitive_biasDescription }} 
+          {{ entity.wikiMedia_description }}</td>
     </tr>
   </tbody>
 </table>

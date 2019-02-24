@@ -3,7 +3,7 @@
     {
       "id": 1,
       "cognitive_bias": "http://www.wikidata.org/entity/Q29598",
-      "cognitive_biasDescription": "cognitive bias; an preference for the current state of affairs.",
+      "cognitive_biasDescription": "A preference for the current state of affairs.",
       "cognitive_biasLabel": "status quo bias",
       "lang": "en",
       "wikiMedia_label": "",
@@ -18,8 +18,8 @@
     {
       "id": 2,
       "cognitive_bias": "http://www.wikidata.org/entity/Q29598",
-      "cognitive_biasDescription": "cognitive bias; an preference for the current state of affairs.",
-      "cognitive_biasLabel": "status quo bias",
+      "cognitive_biasDescription": "The tendency for explanations of other individuals' behaviors to overemphasize the influence of their personality and underemphasize the influence of their situation.",
+      "cognitive_biasLabel": "Actor-observer bias",
       "lang": "en",
       "wikiMedia_label": "",
       "wikiMedia_description": "",
@@ -33,8 +33,8 @@
     {
       "id": 3,
       "cognitive_bias": "http://www.wikidata.org/entity/Q29598",
-      "cognitive_biasDescription": "cognitive bias; an preference for the current state of affairs.",
-      "cognitive_biasLabel": "status quo bias",
+      "cognitive_biasDescription": "The tendency to overestimate the likelihood of events with greater \"availability\" in memory, which can be influenced by how recent the memories are or how unusual or emotionally charged they may be.",
+      "cognitive_biasLabel": "Availability heuristic",
       "lang": "en",
       "wikiMedia_label": "",
       "wikiMedia_description": "",

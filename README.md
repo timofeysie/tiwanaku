@@ -134,6 +134,7 @@ ofType('[Movies Page] Load Movies'),
 
 Like two different languages.  But if you look at ```EEntityActions.GetEntity```, it is a string representing the action we want: ```[Entity] Get Entity```.
 
+It's not easy to see where this is called from if we didn't already know.  EntityEffects is only used in the app.module.  So how does the observable getEntity$ end up on in the template?
 
 
 

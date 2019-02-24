@@ -3,7 +3,7 @@ import { Action } from '@ngrx/store';
 import { IEntity } from '../../models/entity.interface';
 
 export enum EEntityActions {
-  GetEntities = '[Entity] Get Entity',
+  GetEntities = '[Entity] Get Entities',
   GetEntitiesSuccess = '[Entity] Get Entities Success',
   GetEntity = '[Entity] Get Entity',
   GetEntitySuccess = '[Entity] Get Entity Success'
