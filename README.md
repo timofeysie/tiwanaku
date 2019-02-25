@@ -1,4 +1,4 @@
-# Redux Layout
+# Tiwanaku
 
 Examples of managing application state using Angular with Redux.
 
@@ -13,7 +13,17 @@ Akita
 Mobx
 ```
 
+I've heard developers talk about other solutions for the same problem:
+```
+Behaviour Subject
+Angular + Redux + Azure Table (@baskarmib)
+Router state and services
+Observables and Subjects on services
+Services + CQS/CQRS
+```
+
 The NgRx community is a lot larger, and sanctioned by the Angular team, so it makes sense to become familiar with that before branching out to other options.  The big problem is a lot of boilerplate code and a steep learning curve for new team members.  I would say that a simpler version of Redux is emerging but not yet a clear front runner.  Still I've enjoyed learning the NgRx implementations used in this project.
+
 
 
 
@@ -26,6 +36,106 @@ The NgRx community is a lot larger, and sanctioned by the Angular team, so it ma
 3. [Object is possibly 'null'.ts(2531)](#object-is-possibly-'null'.ts(2531))
 4. [Getting started](#getting-started)
 5. [Redux Layout Tutorial App readme](#redux-Layout-Tutorial-App-readme)
+
+
+
+## Switching to entities
+
+The first job was to switch over the user/users functions to entity/entities.  Probably we could have added entities instead of replacing users, but it would be a little easier to just convert the existing.
+
+The entity list from Loranthifolia is a combination of WikiData and WikiMedia lists.  The first is a query from the Conchifolia server.  The second one returns the html sections from the Wikipedia page that has three categories of entities.  This list is then parsed and the resulting data is merged with the WikiData list.  This is why there are two slightly overlapping paramteter lists for the entity model.
+
+
+### WikiData
+```
+cognitive_bias: "http://www.wikidata.org/entity/Q29598"
+cognitive_biasDescription: "cognitive bias; an preference for the current state of affairs."
+cognitive_biasLabel: "status quo bias"
+lang: "en"
+```
+
+### WikiMedia
+```
+wikiMedia_label
+wikiMedia_description
+wikiMedia_category
+sortName
+detailState
+descriptionState
+itemState
+backupTitle
+```
+
+The app now compiles, but the data is not available.   Doing some old school logging on the effect shows the start of the issue.
+```
+entity.effects.ts:25 action GetEntities {type: "[Entity] Get Entity"}
+entity.effects.ts:31 id undefined entities null
+```
+
+Console.log may have it's moments, but this is not one of them.  The articles about NgRx always mention debugging tools.  It's time to get some details on those and put them to use.
+
+It says *pure functions and returning new instances of the state has also a great impact on debugging.*  It also says *store-devtools. Some powerful tolling for debugging.*  That's installed already and in the app module. The package says ```"@ngrx/store-devtools": "^6.1.0",```.
+
+[This repo](https://github.com/ngrx/store-devtools) has a last release of v3.2.4.  It links to [another repo](https://github.com/ngrx/platfor) that says it's version 4x.  But the latest release there is v7.2.0.
+
+The only docs on the first repo have configuration info: *Instrumentation with the Chrome / Firefox Extension (Preferred)*.  The second repo has a link to the official [docs site](https://ngrx.io/).  Non of them so far talk much about debugging tools.
+
+Here is the code we need to debug:
+```
+@Effect()
+getEntity$ = this._actions$.pipe(
+    ofType<GetEntity>(EEntityActions.GetEntity),
+    map(action => action.payload),
+    withLatestFrom(this._store.pipe(select(selectEntityList))),
+    switchMap(([id, entities]) => {
+        console.log('id',id,'entities',entities)
+        const selectedEntity = entities.filter(entity => entity.id === +id)[0];
+        return of(new GetEntitySuccess(selectedEntity));
+    })
+);
+```
+
+There is an introduction to Effects on the docs site says: *Actions are filtered using a pipeable ofType operator. The ofType operator takes one more action types as arguments to filter on which actions to act upon.*
+
+
+This is what the article says about this section:
+* *We declare our effects using the Effect decorator provided by ngrx/effects.*
+* *Using the Actions provided by ngrx/effects we are going to start piping our operator's for this effect.*
+* *The next thing is to set the effect action type using the ofType operator.*
+* *The following parts are rxjs operators that we use in order to get what we need (we already have the link to rxjs documentation in this article).*
+* *Finally, in the last operator, the Effect is going to dispatch another action*
+* *In the constructor, we inject the services we are going to use, the actions for ngrx/effects, and in this case also the store (have into consideration that this is a demo and we are getting the selected user from the list of user in our store)*
+
+*This is pretty much the same structure that you are going to see on any effect. In this case, we are only dispatching a success action but we could be dispatching errors or any other kind of state that we want to handle in our application reducers.*
+
+So this is also where we are going to be doing error handling.  It's an important part of the code for sure.  We can compare our code with the example effect from the official docs:
+```
+@Effect() loadMovies$ = this.actions$
+    .pipe(
+        ofType('[Movies Page] Load Movies'),
+        mergeMap(() => this.moviesService.getAll()
+            .pipe(
+                map(movies => ({ type: '[Movies API] Movies Loaded Success', payload: movies })),
+            catchError(() => EMPTY)
+        ))
+    )
+);
+```
+
+Compare our ofType with the docs:
+```
+ofType<GetEntity>(EEntityActions.GetEntity)
+```
+
+vs
+```
+ofType('[Movies Page] Load Movies'),
+```
+
+Like two different languages.  But if you look at ```EEntityActions.GetEntity```, it is a string representing the action we want: ```[Entity] Get Entity```.
+
+It's not easy to see where this is called from if we didn't already know.  EntityEffects is only used in the app.module.  So how does the observable getEntity$ end up on in the template?
+
 
 
 ## NgRx Working Example

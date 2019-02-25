@@ -3,15 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { IUserHttp } from '../models/http-models/user-http.interface';
+import { IEntityHttp } from '../models/http-models/entity-http.interface';
 
 @Injectable()
-export class UserService {
-  usersUrl = `${environment.apiUrl}users.json`;
+export class EntityService {
+  entitiesUrl = `${environment.apiUrl}entities.json`;
 
   constructor(private _http: HttpClient) { }
 
-  getUsers(): Observable<IUserHttp> {
-    return this._http.get<IUserHttp>(this.usersUrl);
+  GetEntities(): Observable<IEntityHttp> {
+    return this._http.get<IEntityHttp>(this.entitiesUrl);
   }
 }
