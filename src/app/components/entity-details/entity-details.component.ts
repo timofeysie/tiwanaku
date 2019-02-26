@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-
 import { IEntity } from '../../models/entity.interface';
 
 @Component({
@@ -8,10 +7,9 @@ import { IEntity } from '../../models/entity.interface';
   styleUrls: ['./entity-details.component.css']
 })
 export class EntityDetailsComponent implements OnInit {
-  @Input()
-  entity: IEntity;
+  @Input() entity: IEntity;
 
-  constructor() {}
+  constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 }

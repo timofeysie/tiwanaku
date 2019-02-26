@@ -11,7 +11,7 @@ export class EntityService {
 
   constructor(private _http: HttpClient) { }
 
-  GetEntities(): Observable<IEntityHttp> {
+  getEntities(): Observable<IEntityHttp> {
     return this._http.get<IEntityHttp>(this.entitiesUrl);
   }
 }

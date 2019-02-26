@@ -10,9 +10,9 @@ export class EntitiesComponent implements OnInit {
     @Input() entities: IEntity[];
     @Output() entitySelected: EventEmitter<number> = new EventEmitter();
 
-    constructor() {}
+    constructor() { }
 
-    ngOnInit() {}
+    ngOnInit() { }
 
     navigateToEntity(id: number) {
             this.entitySelected.emit(id);
