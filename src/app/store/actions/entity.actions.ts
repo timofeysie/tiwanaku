@@ -20,12 +20,13 @@ export class GetEntitiesSuccess implements Action {
 
 export class GetEntity implements Action {
   public readonly type = EEntityActions.GetEntity;
-  constructor(public payload: number) {}
+  constructor(public payload: number) {
+  }
 }
 
 export class GetEntitySuccess implements Action {
   public readonly type = EEntityActions.GetEntitySuccess;
-  constructor(public payload: IEntity) {}
+  constructor(public payload: IEntity) { }
 }
 
 export type EntityActions = GetEntities | GetEntitiesSuccess | GetEntity | GetEntitySuccess;

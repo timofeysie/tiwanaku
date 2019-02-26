@@ -1,9 +1,9 @@
 export interface IEntity {
-  id: number;
-  // wikidata
-  cognitive_bias: string;
-	cognitive_biasDescription: string;
-  cognitive_biasLabel: string;
+    id: number;
+    // wikidata
+    cognitive_bias: string;
+    cognitive_biasDescription: string;
+    cognitive_biasLabel: string;
 	lang: string;
 	// WikiMedia
 	wikiMedia_label: string;

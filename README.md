@@ -134,8 +134,14 @@ ofType('[Movies Page] Load Movies'),
 
 Like two different languages.  But if you look at ```EEntityActions.GetEntity```, it is a string representing the action we want: ```[Entity] Get Entity```.
 
-It's not easy to see where this is called from if we didn't already know.  EntityEffects is only used in the app.module.  So how does the observable getEntity$ end up on in the template?
+It's not easy to see where this is called from if we didn't already know.  EntityEffects is only used in the app.module.  So how does the observable getEntity$ end up on in the template?  There is no simple way to put it other than reading the docs and looking at lots of examples.
 
+For the entity detail view the order in which the functions would get called looks something like this:
+entities.component.navigateToEntity(id)
+entity.component.ngOnInit()
+entity.actions.GetEntity impl. Action {type = EEntityActions.GetEntity; constructor(public payload: number)
+entity.effects.@Effect() getEntity$ = this._actions$.pipe
+entity.actions.GetEntitySuccess impl. Action {type = EEntityActions.GetEntitySuccess; c(public payload: IEntity)
 
 
 ## NgRx Working Example
