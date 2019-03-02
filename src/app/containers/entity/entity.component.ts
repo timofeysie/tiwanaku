@@ -17,6 +17,6 @@ export class EntityComponent implements OnInit {
         private _route: ActivatedRoute) { }
 
     ngOnInit() {
-        this._store.dispatch(new GetEntity(this._route.snapshot.params.id));
+        this._store.dispatch(new GetEntity(this._route.snapshot.params.cognitive_bias));
     }
 }

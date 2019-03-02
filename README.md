@@ -38,6 +38,14 @@ The NgRx community is a lot larger, and sanctioned by the Angular team, so it ma
 5. [Redux Layout Tutorial App readme](#redux-Layout-Tutorial-App-readme)
 
 
+## The data source
+
+
+Using the Conchifolia NodeJS server as an endpoint for the entity data works, but the data model expected by the entity interface doesn't match, and there is no id value used here.
+
+We want to use the Q-code entity id for this.  Using Rxjs an observable stream needs to be created to massage the results into what can be used by NgRx.  Map can be used to run a function on each item.  We don't actually need the id as the cognitive_bias is the url with the Q-code.  The serve *could* parse the results and create an id from this string, and then find the Q-code from the Wikimedia parsing results but it's still not clear if that is the best way to go.
+
+
 
 ## Switching to entities
 
@@ -137,11 +145,13 @@ Like two different languages.  But if you look at ```EEntityActions.GetEntity```
 It's not easy to see where this is called from if we didn't already know.  EntityEffects is only used in the app.module.  So how does the observable getEntity$ end up on in the template?  There is no simple way to put it other than reading the docs and looking at lots of examples.
 
 For the entity detail view the order in which the functions would get called looks something like this:
+```
 entities.component.navigateToEntity(id)
 entity.component.ngOnInit()
 entity.actions.GetEntity impl. Action {type = EEntityActions.GetEntity; constructor(public payload: number)
 entity.effects.@Effect() getEntity$ = this._actions$.pipe
 entity.actions.GetEntitySuccess impl. Action {type = EEntityActions.GetEntitySuccess; c(public payload: IEntity)
+```
 
 
 ## NgRx Working Example
@@ -154,7 +164,7 @@ Currently working on the Santiago García Da Rosa [example](https://github.com/S
 
 Santiago mentions an [article](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0) by [Dan Abramov](https://medium.com/@dan_abramov) about the container and presentation components pattern used in this example. There is a disclaimer at the top of this article now that says he doesn't recommend it anymore.  Anyhow, it's already implemented here and can help separate complex stateful logic from other aspects of the component, which is what this project is all about.
 
-There are other names for this patter, for example:
+There are other names for this pattern, for example:
 ```
 Container and Presentational
 Fat and Skinny
