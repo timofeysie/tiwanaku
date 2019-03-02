@@ -15,7 +15,9 @@ export class GetEntities implements Action {
 
 export class GetEntitiesSuccess implements Action {
   public readonly type = EEntityActions.GetEntitiesSuccess;
-  constructor(public payload: IEntity[]) {}
+  constructor(public payload: IEntity[]) {
+    console.log('payload', payload);
+  }
 }
 
 export class GetEntity implements Action {

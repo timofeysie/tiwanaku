@@ -1,15 +1,13 @@
 <table class="table table-hover">
   <thead class="thead-dark">
     <tr>
-      <th scope="col">#</th>
       <th scope="col">Name</th>
       <th scope="col">Description</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let entity of entities"
-      (click)="navigateToEntity(entity.id)">
-      <td>{{ entity.id }}</td>
+      (click)="navigateToEntity(entity.cognitive_bias)">
       <td>{{ entity.cognitive_biasLabel }}</td>
       <td>{{ entity.cognitive_biasDescription }} 
           {{ entity.wikiMedia_description }}</td>

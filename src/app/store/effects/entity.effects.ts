@@ -22,9 +22,9 @@ export class EntityEffects {
     ofType<GetEntity>(EEntityActions.GetEntity),
     map(action => action.payload),
     withLatestFrom(this._store.pipe(select(selectEntityList))),
-    switchMap(([id, entities]) => {
-        console.log('EntityEffects.getEntity$ action$.pipe id',id);
-          const selectedEntity = entities.filter(entity => entity.id === +id)[0];
+    switchMap(([cognitive_bias, entities]) => {
+        console.log('EntityEffects.getEntity$ action$.pipe cognitive_bias', cognitive_bias);
+          const selectedEntity = entities.filter(entity => entity.cognitive_bias)[0];
           return of(new GetEntitySuccess(selectedEntity));
     })
 );
@@ -32,8 +32,8 @@ export class EntityEffects {
   @Effect()
   getEntities$ = this._actions$.pipe(
     ofType<GetEntities>(EEntityActions.GetEntities),
-    switchMap(() => this._entityService.getEntities()),
-    switchMap((entityHttp: IEntityHttp) => of(new GetEntitiesSuccess(entityHttp.entities)))
+    switchMap(() => this._entityService.getList()),
+    switchMap((entityHttp: IEntityHttp) => of(new GetEntitiesSuccess(entityHttp.list)))
   );
 
   constructor(
