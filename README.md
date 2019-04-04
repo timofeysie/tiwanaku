@@ -2,34 +2,36 @@
 
 Examples of managing application state using Angular with Redux.
 
-UI state management [from an artilce](https://www.pluralsight.com/guides/ui-state-management-with-redux-in-angular-4) by [Hristo Georgiev](https://github.com/hggeorgiev).
+The current implementation is based on [NgRx](https://ngrx.io/) which *provides reactive state management for Angular apps inspired by Redux.*
 
-A [working example](https://github.com/SantiagoGdaR/angular-ngrx) from the [tutorial](https://medium.com/frontend-fun/angular-ngrx-a-clean-and-clear-introduction-4ed61c89c1fc) by [Santiago García Da Rosa](https://medium.com/@santiagogarcadarosa).
+There is a UI state management implementation [from an artilce](https://www.pluralsight.com/guides/ui-state-management-with-redux-in-angular-4) by [Hristo Georgiev](https://github.com/hggeorgiev) on the georgiev-branch which currently has some upgrade issues.
 
-Other options for Angular that need to be looked at in this project are:
+The master branch has a [working example](https://github.com/SantiagoGdaR/angular-ngrx) from the [article](https://medium.com/frontend-fun/angular-ngrx-a-clean-and-clear-introduction-4ed61c89c1fc) by [Santiago García Da Rosa](https://medium.com/@santiagogarcadarosa).
+
+Other options available for state management in Angular that can be looked at are:
 ```
 NGXS (where reducer + effects = state)
 Akita
 Mobx
 ```
 
-I've heard developers talk about other solutions for the same problem:
+Developers also talk about other solutions for the same problem such as:
 ```
-Behaviour Subject
-Angular + Redux + Azure Table (@baskarmib)
+Behaviour Subjects
+Angular + Redux + Azure Tables (@baskarmib)
 Router state and services
 Observables and Subjects on services
 Services + CQS/CQRS
 ```
 
-The NgRx community is a lot larger, and sanctioned by the Angular team, so it makes sense to become familiar with that before branching out to other options.  The big problem is a lot of boilerplate code and a steep learning curve for new team members.  I would say that a simpler version of Redux is emerging but not yet a clear front runner.  Still I've enjoyed learning the NgRx implementations used in this project.
-
+The NgRx community however is a lot larger than any of these, and sanctioned by the Angular team, so it makes sense to become familiar with that before branching out to other options.  The main arguments against using a state management pattern are a lot of boilerplate code and a steep learning curve for new team members.  I would say that a simpler version of Redux is emerging but not yet a clear front runner.  Still I've enjoyed learning the NgRx implementations used in this project.
 
 
 
 ## Table of contents
 
-
+1. [The data source](#the-data-source)
+1. [Fixing the tests](#fixing-the-tests)
 1. [NgRx Working Example](#ngRx-Working-Example)
 1. [Redux UI State Management](#redux-UI-state-management)
 2. [JQuery and Bootstrap](#JQuery-and-Bootstrap)
@@ -40,16 +42,10 @@ The NgRx community is a lot larger, and sanctioned by the Angular team, so it ma
 
 ## The data source
 
-
-Using the Conchifolia NodeJS server as an endpoint for the entity data works, but the data model expected by the entity interface doesn't match, and there is no id value used here.
+We use the [Conchifolia](https://github.com/timofeysie/conchifolia) NodeJS server app as an endpoint for the entity data, but the data model expected by the entity interface doesn't match, and there is no id value used here.
 
 We want to use the Q-code entity id for this.  Using Rxjs an observable stream needs to be created to massage the results into what can be used by NgRx.  Map can be used to run a function on each item.  We don't actually need the id as the cognitive_bias is the url with the Q-code.  The serve *could* parse the results and create an id from this string, and then find the Q-code from the Wikimedia parsing results but it's still not clear if that is the best way to go.
 
-
-
-## Switching to entities
-
-The first job was to switch over the user/users functions to entity/entities.  Probably we could have added entities instead of replacing users, but it would be a little easier to just convert the existing.
 
 The entity list from Loranthifolia is a combination of WikiData and WikiMedia lists.  The first is a query from the Conchifolia server.  The second one returns the html sections from the Wikipedia page that has three categories of entities.  This list is then parsed and the resulting data is merged with the WikiData list.  This is why there are two slightly overlapping paramteter lists for the entity model.
 
@@ -154,11 +150,41 @@ entity.actions.GetEntitySuccess impl. Action {type = EEntityActions.GetEntitySuc
 ```
 
 
+
+## Fixing the tests
+Fixing the tests after this change became a challenge.  The tests were not updated in the Redux example, so 8 out of 9 tests were failing with setup issues.
+
+When running ng test - got a 'router-outlet' is not a known element - error.
+
+Imported the routing module in the spec and then got this:
+```
+Failed: StaticInjectorError(DynamicTestModule)[AppComponent -> Store]:
+```
+
+### Error handling
+
+This could be done in various ways, but handling the errors globally seemed like a good idea.  [Here is one way](https://medium.com/calyx/global-error-handling-with-angular-and-ngrx-d895f7df2895) using the httpInterceptor.
+
+Currently, if we turn off the wifi and refresh the page, we get these errors in the console log:
+```
+zone.js:2969 GET https://radiant-springs-38893.herokuapp.com/api/list/en net::ERR_INTERNET_DISCONNECTED
+scheduleTask @ zone.js:2969
+...
+Error: ...
+Headers: ...
+message: "Http failure response for (unknown url): 0 Unknown Error"
+name: "HttpErrorResponse"
+ok: false
+status: 0
+statusText: "Unknown Error"
+url: null
+```
+
+
 ## NgRx Working Example
 
 
-Currently working on the Santiago García Da Rosa [example](https://github.com/SantiagoGdaR/angular-ngrx).
-
+The Santiago García Da Rosa [example](https://github.com/SantiagoGdaR/angular-ngrx) provides a great start to implementing Redux in Angular.
 
 ### Containers components and presentation components
 
@@ -209,7 +235,7 @@ For example:
 switchMap((config: IConfig) => {
 ```
 
-Santiago replied that you can use map and Array.find as it might be better. The first he felt more comfortable and the second, using Array.filter, was not the best approach. 
+Santiago replied that you can use map and Array.find as it might be better. The first he felt more comfortable and the second, using Array.filter, was not the best approach.
 
 
 
@@ -363,11 +389,11 @@ src/app/common/layout/layout.reducer.ts(17,8): error TS2355: A function whose de
 
 A direct clone of the completed code shows this error when running ```ionic serve```:
 ```
-ERROR in Metadata version mismatch for module 
-/Users/tim/angular/redux/ngx-redux-ui-management-recipes/node_modules/@ng-bootstrap/ng-bootstrap/index.d.ts, 
-found version 4, expected 3, 
-resolving symbol AppModule in 
-/Users/tim/angular/redux/ngx-redux-ui-management-recipes/src/app/app.module.ts, 
+ERROR in Metadata version mismatch for module
+/Users/tim/angular/redux/ngx-redux-ui-management-recipes/node_modules/@ng-bootstrap/ng-bootstrap/index.d.ts,
+found version 4, expected 3,
+resolving symbol AppModule in
+/Users/tim/angular/redux/ngx-redux-ui-management-recipes/src/app/app.module.ts,
 ...
 ```
 
