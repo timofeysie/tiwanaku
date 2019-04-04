@@ -1,8 +1,27 @@
 # Tiwanaku
 
-Examples of managing application state using Angular with Redux.
+This is an app to get a list of entities from WikiData and provide a detail view of the items from a WikiMedia page.  It currently uses the [Conchifolia](https://github.com/timofeysie/conchifolia) NodeJS server app as a proxy for these calls.
 
-The current implementation is based on [NgRx](https://ngrx.io/) which *provides reactive state management for Angular apps inspired by Redux.*
+It provides an example of managing application state using Angular with Redux based on [NgRx](https://ngrx.io/) which *provides reactive state management for Angular apps inspired by Redux.*
+
+
+## Table of contents
+
+1. [Options for state management in Angular](#options-for-state-management-in-Angular)
+1. [The data source](#the-data-source)
+1. [Fixing the tests](#fixing-the-tests)
+1. [Global error handling](#global-error-handling)
+1. [NgRx Working Example](#ngRx-Working-Example)
+1. [Redux UI State Management](#redux-UI-state-management)
+2. [JQuery and Bootstrap](#JQuery-and-Bootstrap)
+3. [Object is possibly 'null'.ts(2531)](#object-is-possibly-'null'.ts(2531))
+4. [Getting started](#getting-started)
+5. [Redux Layout Tutorial App readme](#redux-Layout-Tutorial-App-readme)
+
+
+## Options for state management in Angular
+
+This app provides an example of managing application state using Redux in an Angular application based on [NgRx](https://ngrx.io/).
 
 There is a UI state management implementation [from an artilce](https://www.pluralsight.com/guides/ui-state-management-with-redux-in-angular-4) by [Hristo Georgiev](https://github.com/hggeorgiev) on the georgiev-branch which currently has some upgrade issues.
 
@@ -26,18 +45,6 @@ Services + CQS/CQRS
 
 The NgRx community however is a lot larger than any of these, and sanctioned by the Angular team, so it makes sense to become familiar with that before branching out to other options.  The main arguments against using a state management pattern are a lot of boilerplate code and a steep learning curve for new team members.  I would say that a simpler version of Redux is emerging but not yet a clear front runner.  Still I've enjoyed learning the NgRx implementations used in this project.
 
-
-
-## Table of contents
-
-1. [The data source](#the-data-source)
-1. [Fixing the tests](#fixing-the-tests)
-1. [NgRx Working Example](#ngRx-Working-Example)
-1. [Redux UI State Management](#redux-UI-state-management)
-2. [JQuery and Bootstrap](#JQuery-and-Bootstrap)
-3. [Object is possibly 'null'.ts(2531)](#object-is-possibly-'null'.ts(2531))
-4. [Getting started](#getting-started)
-5. [Redux Layout Tutorial App readme](#redux-Layout-Tutorial-App-readme)
 
 
 ## The data source
@@ -152,6 +159,7 @@ entity.actions.GetEntitySuccess impl. Action {type = EEntityActions.GetEntitySuc
 
 
 ## Fixing the tests
+
 Fixing the tests after this change became a challenge.  The tests were not updated in the Redux example, so 8 out of 9 tests were failing with setup issues.
 
 When running ng test - got a 'router-outlet' is not a known element - error.
@@ -161,7 +169,10 @@ Imported the routing module in the spec and then got this:
 Failed: StaticInjectorError(DynamicTestModule)[AppComponent -> Store]:
 ```
 
-### Error handling
+So, as you can see, this is a WIP.  First will be finishing off the global error handling setup which will also help in testing the app.
+
+
+## Global error handling
 
 This could be done in various ways, but handling the errors globally seemed like a good idea.  [Here is one way](https://medium.com/calyx/global-error-handling-with-angular-and-ngrx-d895f7df2895) using the httpInterceptor.
 
@@ -179,6 +190,26 @@ status: 0
 statusText: "Unknown Error"
 url: null
 ```
+
+Out of the box, the http error shows up in the entity actions, which is good, but it doesn't make it to the app component, which is the 'global' part of this.  If we add the error to the app state like this:
+```
+export interface IAppState {
+  router?: RouterReducerState;
+  entities: IEntityState;
+  config: IConfigState;
+  error: any;
+}
+
+export const initialAppState: IAppState = {
+  entities: initialEntityState,
+  config: initialConfigState,
+  error: null
+};
+```
+
+We also need to add the error to the app reducers.  Then we will get errors reported and handled on global basis.  We might also want to save intercepted errors in the Store and display them in some sort of a error log.
+
+But next, this all came about when considering how to add a loading spinner to hook into the API call actions.  This is a first step towards making that happen.
 
 
 ## NgRx Working Example
@@ -441,7 +472,7 @@ info All dependencies
 ✨  Done in 109.88s.
 ```
 
-In the script and styles arrays inside angluar.json, removed the step upp path ```../```.
+In the script and styles arrays inside angluar.json, removed the step up path ```../```.
 Then the error is looking for something else:
 ```
 Error: ENOENT: no such file or directory, open '/Users/tim/angular/redux-layout-tutorial-app/node_modules/tether/dist/js/tether.js'
