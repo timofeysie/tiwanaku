@@ -16,10 +16,7 @@ export class AppComponent implements OnInit {
   error$: Observable<any>;
 
   constructor(private _store: Store<IAppState>) {
-    console.log('store',_store);
       this.error$ = _store.pipe(select('error'));
-      // the store and the errors$ are the same object,
-      // so not sure what pipe is doing...
   }
 
   ngOnInit() {

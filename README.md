@@ -19,6 +19,22 @@ It provides an example of managing application state using Angular with Redux ba
 5. [Redux Layout Tutorial App readme](#redux-Layout-Tutorial-App-readme)
 
 
+## current worked
+
+* Entity count in the title
+* Language config setting used in the API call
+
+### The entity count in the title could be considered a memoization.  *In computing, memoization or memoisation is an optimization technique used primarily to speed up computer programs by storing the results of expensive function calls and returning the cached result when the same inputs occur again.*
+
+We will want to use a reducer or selector to get a slice of the entities store state to display next to the title.  I'm not sure this is the correct place for it (when we have a need for an entities selector, it might be more logical to have it there), the entity.selector.ts file can have this:
+```
+export const selectEntityCount = createSelector(
+  selectCount,
+  (state: EntityState) => state.count
+);
+```
+
+
 ## Options for state management in Angular
 
 This app provides an example of managing application state using Redux in an Angular application based on [NgRx](https://ngrx.io/).
@@ -99,7 +115,6 @@ getEntity$ = this._actions$.pipe(
     map(action => action.payload),
     withLatestFrom(this._store.pipe(select(selectEntityList))),
     switchMap(([id, entities]) => {
-        console.log('id',id,'entities',entities)
         const selectedEntity = entities.filter(entity => entity.id === +id)[0];
         return of(new GetEntitySuccess(selectedEntity));
     })
@@ -284,7 +299,14 @@ Here are some of the errors when trying to run the sample.
 
 ### RxJS
 
-The [migration docs for Ionic 3 to 4](https://ionicframework.com/docs/building/migration#rxjs-changes) link to a [separate page](https://github.com/ReactiveX/rxjs/blob/master/MIGRATION.md) for RxJS which was updated to version 6.  This page then redirects to [another page](https://github.com/ReactiveX/rxjs/blob/master/docs_app/content/guide/v6/migration.md).  The most current release is 6.4.
+This is a great library.  Quoted from the official introduction:
+*RxJS is a library for composing asynchronous and event-based programs by using observable sequences. It provides one core type, the Observable, satellite types (Observer, Schedulers, Subjects) and operators inspired by Array#extras (map, filter, reduce, every, etc) to allow handling asynchronous events as collections.*
+
+*Think of RxJS as Lodash for events.*
+
+*ReactiveX combines the Observer pattern with the Iterator pattern and functional programming with collections to fill the need for an ideal way of managing sequences of events.*
+
+However, it has changed over time so looking at older code can be a problem.  The [migration docs for Ionic 3 to 4](https://ionicframework.com/docs/building/migration#rxjs-changes) link to a [separate page](https://github.com/ReactiveX/rxjs/blob/master/MIGRATION.md) for RxJS which was updated to version 6.  This page then redirects to [another page](https://github.com/ReactiveX/rxjs/blob/master/docs_app/content/guide/v6/migration.md).  The most current release is 6.4.
 
 This is the version we got when installing RxJS in the newly created project.  The relevant parts of the package.json file currently are:
 ```

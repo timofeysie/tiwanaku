@@ -23,7 +23,6 @@ export class EntityEffects {
     map(action => action.payload),
     withLatestFrom(this._store.pipe(select(selectEntityList))),
     switchMap(([cognitive_bias, entities]) => {
-        console.log('EntityEffects.getEntity$ action$.pipe cognitive_bias', cognitive_bias);
           const selectedEntity = entities.filter(entity => entity.cognitive_bias)[0];
           return of(new GetEntitySuccess(selectedEntity));
     })

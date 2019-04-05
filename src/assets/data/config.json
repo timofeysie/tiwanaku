@@ -1,4 +1,5 @@
 {
   "adminName": "Cognitive biases",
-  "permissions": ["entities"]
+  "permissions": ["entities"],
+  "language": "en"
 }
