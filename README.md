@@ -1,35 +1,16 @@
 # Tiwanaku
 
-Examples of managing application state using Angular with Redux.
+This is an app to get a list of entities from WikiData and provide a detail view of the items from a WikiMedia page.  It currently uses the [Conchifolia](https://github.com/timofeysie/conchifolia) NodeJS server app as a proxy for these calls.
 
-UI state management [from an artilce](https://www.pluralsight.com/guides/ui-state-management-with-redux-in-angular-4) by [Hristo Georgiev](https://github.com/hggeorgiev).
-
-A [working example](https://github.com/SantiagoGdaR/angular-ngrx) from the [tutorial](https://medium.com/frontend-fun/angular-ngrx-a-clean-and-clear-introduction-4ed61c89c1fc) by [Santiago García Da Rosa](https://medium.com/@santiagogarcadarosa).
-
-Other options for Angular that need to be looked at in this project are:
-```
-NGXS (where reducer + effects = state)
-Akita
-Mobx
-```
-
-I've heard developers talk about other solutions for the same problem:
-```
-Behaviour Subject
-Angular + Redux + Azure Table (@baskarmib)
-Router state and services
-Observables and Subjects on services
-Services + CQS/CQRS
-```
-
-The NgRx community is a lot larger, and sanctioned by the Angular team, so it makes sense to become familiar with that before branching out to other options.  The big problem is a lot of boilerplate code and a steep learning curve for new team members.  I would say that a simpler version of Redux is emerging but not yet a clear front runner.  Still I've enjoyed learning the NgRx implementations used in this project.
-
-
+It provides an example of managing application state using Angular with Redux based on [NgRx](https://ngrx.io/) which *provides reactive state management for Angular apps inspired by Redux.*
 
 
 ## Table of contents
 
-
+1. [Options for state management in Angular](#options-for-state-management-in-Angular)
+1. [The data source](#the-data-source)
+1. [Fixing the tests](#fixing-the-tests)
+1. [Global error handling](#global-error-handling)
 1. [NgRx Working Example](#ngRx-Working-Example)
 1. [Redux UI State Management](#redux-UI-state-management)
 2. [JQuery and Bootstrap](#JQuery-and-Bootstrap)
@@ -38,18 +19,56 @@ The NgRx community is a lot larger, and sanctioned by the Angular team, so it ma
 5. [Redux Layout Tutorial App readme](#redux-Layout-Tutorial-App-readme)
 
 
+## current worked
+
+* Entity count in the title
+* Language config setting used in the API call
+
+### The entity count in the title could be considered a memoization.  *In computing, memoization or memoisation is an optimization technique used primarily to speed up computer programs by storing the results of expensive function calls and returning the cached result when the same inputs occur again.*
+
+We will want to use a reducer or selector to get a slice of the entities store state to display next to the title.  I'm not sure this is the correct place for it (when we have a need for an entities selector, it might be more logical to have it there), the entity.selector.ts file can have this:
+```
+export const selectEntityCount = createSelector(
+  selectCount,
+  (state: EntityState) => state.count
+);
+```
+
+
+## Options for state management in Angular
+
+This app provides an example of managing application state using Redux in an Angular application based on [NgRx](https://ngrx.io/).
+
+There is a UI state management implementation [from an artilce](https://www.pluralsight.com/guides/ui-state-management-with-redux-in-angular-4) by [Hristo Georgiev](https://github.com/hggeorgiev) on the georgiev-branch which currently has some upgrade issues.
+
+The master branch has a [working example](https://github.com/SantiagoGdaR/angular-ngrx) from the [article](https://medium.com/frontend-fun/angular-ngrx-a-clean-and-clear-introduction-4ed61c89c1fc) by [Santiago García Da Rosa](https://medium.com/@santiagogarcadarosa).
+
+Other options available for state management in Angular that can be looked at are:
+```
+NGXS (where reducer + effects = state)
+Akita
+Mobx
+```
+
+Developers also talk about other solutions for the same problem such as:
+```
+Behaviour Subjects
+Angular + Redux + Azure Tables (@baskarmib)
+Router state and services
+Observables and Subjects on services
+Services + CQS/CQRS
+```
+
+The NgRx community however is a lot larger than any of these, and sanctioned by the Angular team, so it makes sense to become familiar with that before branching out to other options.  The main arguments against using a state management pattern are a lot of boilerplate code and a steep learning curve for new team members.  I would say that a simpler version of Redux is emerging but not yet a clear front runner.  Still I've enjoyed learning the NgRx implementations used in this project.
+
+
+
 ## The data source
 
-
-Using the Conchifolia NodeJS server as an endpoint for the entity data works, but the data model expected by the entity interface doesn't match, and there is no id value used here.
+We use the [Conchifolia](https://github.com/timofeysie/conchifolia) NodeJS server app as an endpoint for the entity data, but the data model expected by the entity interface doesn't match, and there is no id value used here.
 
 We want to use the Q-code entity id for this.  Using Rxjs an observable stream needs to be created to massage the results into what can be used by NgRx.  Map can be used to run a function on each item.  We don't actually need the id as the cognitive_bias is the url with the Q-code.  The serve *could* parse the results and create an id from this string, and then find the Q-code from the Wikimedia parsing results but it's still not clear if that is the best way to go.
 
-
-
-## Switching to entities
-
-The first job was to switch over the user/users functions to entity/entities.  Probably we could have added entities instead of replacing users, but it would be a little easier to just convert the existing.
 
 The entity list from Loranthifolia is a combination of WikiData and WikiMedia lists.  The first is a query from the Conchifolia server.  The second one returns the html sections from the Wikipedia page that has three categories of entities.  This list is then parsed and the resulting data is merged with the WikiData list.  This is why there are two slightly overlapping paramteter lists for the entity model.
 
@@ -96,7 +115,6 @@ getEntity$ = this._actions$.pipe(
     map(action => action.payload),
     withLatestFrom(this._store.pipe(select(selectEntityList))),
     switchMap(([id, entities]) => {
-        console.log('id',id,'entities',entities)
         const selectedEntity = entities.filter(entity => entity.id === +id)[0];
         return of(new GetEntitySuccess(selectedEntity));
     })
@@ -154,11 +172,65 @@ entity.actions.GetEntitySuccess impl. Action {type = EEntityActions.GetEntitySuc
 ```
 
 
+
+## Fixing the tests
+
+Fixing the tests after this change became a challenge.  The tests were not updated in the Redux example, so 8 out of 9 tests were failing with setup issues.
+
+When running ng test - got a 'router-outlet' is not a known element - error.
+
+Imported the routing module in the spec and then got this:
+```
+Failed: StaticInjectorError(DynamicTestModule)[AppComponent -> Store]:
+```
+
+So, as you can see, this is a WIP.  First will be finishing off the global error handling setup which will also help in testing the app.
+
+
+## Global error handling
+
+This could be done in various ways, but handling the errors globally seemed like a good idea.  [Here is one way](https://medium.com/calyx/global-error-handling-with-angular-and-ngrx-d895f7df2895) using the httpInterceptor.
+
+Currently, if we turn off the wifi and refresh the page, we get these errors in the console log:
+```
+zone.js:2969 GET https://radiant-springs-38893.herokuapp.com/api/list/en net::ERR_INTERNET_DISCONNECTED
+scheduleTask @ zone.js:2969
+...
+Error: ...
+Headers: ...
+message: "Http failure response for (unknown url): 0 Unknown Error"
+name: "HttpErrorResponse"
+ok: false
+status: 0
+statusText: "Unknown Error"
+url: null
+```
+
+Out of the box, the http error shows up in the entity actions, which is good, but it doesn't make it to the app component, which is the 'global' part of this.  If we add the error to the app state like this:
+```
+export interface IAppState {
+  router?: RouterReducerState;
+  entities: IEntityState;
+  config: IConfigState;
+  error: any;
+}
+
+export const initialAppState: IAppState = {
+  entities: initialEntityState,
+  config: initialConfigState,
+  error: null
+};
+```
+
+We also need to add the error to the app reducers.  Then we will get errors reported and handled on global basis.  We might also want to save intercepted errors in the Store and display them in some sort of a error log.
+
+But next, this all came about when considering how to add a loading spinner to hook into the API call actions.  This is a first step towards making that happen.
+
+
 ## NgRx Working Example
 
 
-Currently working on the Santiago García Da Rosa [example](https://github.com/SantiagoGdaR/angular-ngrx).
-
+The Santiago García Da Rosa [example](https://github.com/SantiagoGdaR/angular-ngrx) provides a great start to implementing Redux in Angular.
 
 ### Containers components and presentation components
 
@@ -209,7 +281,7 @@ For example:
 switchMap((config: IConfig) => {
 ```
 
-Santiago replied that you can use map and Array.find as it might be better. The first he felt more comfortable and the second, using Array.filter, was not the best approach. 
+Santiago replied that you can use map and Array.find as it might be better. The first he felt more comfortable and the second, using Array.filter, was not the best approach.
 
 
 
@@ -227,7 +299,14 @@ Here are some of the errors when trying to run the sample.
 
 ### RxJS
 
-The [migration docs for Ionic 3 to 4](https://ionicframework.com/docs/building/migration#rxjs-changes) link to a [separate page](https://github.com/ReactiveX/rxjs/blob/master/MIGRATION.md) for RxJS which was updated to version 6.  This page then redirects to [another page](https://github.com/ReactiveX/rxjs/blob/master/docs_app/content/guide/v6/migration.md).  The most current release is 6.4.
+This is a great library.  Quoted from the official introduction:
+*RxJS is a library for composing asynchronous and event-based programs by using observable sequences. It provides one core type, the Observable, satellite types (Observer, Schedulers, Subjects) and operators inspired by Array#extras (map, filter, reduce, every, etc) to allow handling asynchronous events as collections.*
+
+*Think of RxJS as Lodash for events.*
+
+*ReactiveX combines the Observer pattern with the Iterator pattern and functional programming with collections to fill the need for an ideal way of managing sequences of events.*
+
+However, it has changed over time so looking at older code can be a problem.  The [migration docs for Ionic 3 to 4](https://ionicframework.com/docs/building/migration#rxjs-changes) link to a [separate page](https://github.com/ReactiveX/rxjs/blob/master/MIGRATION.md) for RxJS which was updated to version 6.  This page then redirects to [another page](https://github.com/ReactiveX/rxjs/blob/master/docs_app/content/guide/v6/migration.md).  The most current release is 6.4.
 
 This is the version we got when installing RxJS in the newly created project.  The relevant parts of the package.json file currently are:
 ```
@@ -363,11 +442,11 @@ src/app/common/layout/layout.reducer.ts(17,8): error TS2355: A function whose de
 
 A direct clone of the completed code shows this error when running ```ionic serve```:
 ```
-ERROR in Metadata version mismatch for module 
-/Users/tim/angular/redux/ngx-redux-ui-management-recipes/node_modules/@ng-bootstrap/ng-bootstrap/index.d.ts, 
-found version 4, expected 3, 
-resolving symbol AppModule in 
-/Users/tim/angular/redux/ngx-redux-ui-management-recipes/src/app/app.module.ts, 
+ERROR in Metadata version mismatch for module
+/Users/tim/angular/redux/ngx-redux-ui-management-recipes/node_modules/@ng-bootstrap/ng-bootstrap/index.d.ts,
+found version 4, expected 3,
+resolving symbol AppModule in
+/Users/tim/angular/redux/ngx-redux-ui-management-recipes/src/app/app.module.ts,
 ...
 ```
 
@@ -415,7 +494,7 @@ info All dependencies
 ✨  Done in 109.88s.
 ```
 
-In the script and styles arrays inside angluar.json, removed the step upp path ```../```.
+In the script and styles arrays inside angluar.json, removed the step up path ```../```.
 Then the error is looking for something else:
 ```
 Error: ENOENT: no such file or directory, open '/Users/tim/angular/redux-layout-tutorial-app/node_modules/tether/dist/js/tether.js'

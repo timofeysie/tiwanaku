@@ -8,11 +8,13 @@ export interface IAppState {
   router?: RouterReducerState;
   entities: IEntityState;
   config: IConfigState;
+  error: string;
 }
 
 export const initialAppState: IAppState = {
   entities: initialEntityState,
-  config: initialConfigState
+  config: initialConfigState,
+  error: null
 };
 
 export function getInitialState(): IAppState {

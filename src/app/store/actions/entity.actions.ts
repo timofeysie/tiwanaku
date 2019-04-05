@@ -1,5 +1,4 @@
 import { Action } from '@ngrx/store';
-
 import { IEntity } from '../../models/entity.interface';
 
 export enum EEntityActions {
@@ -15,9 +14,7 @@ export class GetEntities implements Action {
 
 export class GetEntitiesSuccess implements Action {
   public readonly type = EEntityActions.GetEntitiesSuccess;
-  constructor(public payload: IEntity[]) {
-    console.log('payload', payload);
-  }
+  constructor(public payload: IEntity[]) { }
 }
 
 export class GetEntity implements Action {

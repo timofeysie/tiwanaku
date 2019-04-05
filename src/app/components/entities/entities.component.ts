@@ -9,7 +9,7 @@ import { IEntity } from '../../models/entity.interface';
 export class EntitiesComponent implements OnInit {
     @Input() entities: IEntity[];
     @Output() entitySelected: EventEmitter<number> = new EventEmitter();
-
+    
     constructor() { }
 
     ngOnInit() { }

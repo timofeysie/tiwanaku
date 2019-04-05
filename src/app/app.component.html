@@ -15,3 +15,4 @@
 <div class="container app-container">
   <router-outlet></router-outlet>
 </div>
+<div *ngIf="error$ | async as error" class="error">{{error.message}}</div>
