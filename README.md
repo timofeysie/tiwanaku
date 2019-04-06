@@ -19,7 +19,8 @@ It provides an example of managing application state using Angular with Redux ba
 5. [Redux Layout Tutorial App readme](#redux-Layout-Tutorial-App-readme)
 
 
-## current worked
+## Current work
+
 
 * Entity count in the title
 * Language config setting used in the API call
@@ -33,6 +34,19 @@ export const selectEntityCount = createSelector(
   (state: EntityState) => state.count
 );
 ```
+
+This  might however be a naive way of doing things.  A best practice for NgRx says:
+*don't store state that can be derived*
+
+Since the count of the entities can be derived, maybe we should just get the entities in the app component and get the length there.  Is there a memory problem with holding the entities in multiple components is the question then that needs to be answered.
+
+So without adding anything to the store, we do this in the top level component to add the number of entities to the title of the app:
+```
+<span *ngIf="(entities$ | async)">{{ (entities$ | async).length}}</span>
+```
+
+The ng if is there to stop errors from showing up before the list arrives from the server.  Assuming the store is the source of truth and simply getting them there from the store to get the length is not costing us any memory, why not?
+
 
 
 ## Options for state management in Angular
