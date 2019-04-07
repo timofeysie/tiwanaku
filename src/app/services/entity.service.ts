@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -9,7 +9,7 @@ import { GetConfig } from '../store/actions/config.actions';
 import { selectConfig } from '../store/selectors/config.selector';
 
 @Injectable()
-export class EntityService {
+export class EntityService implements OnInit {
   lang: string;
   config$ = this._store.pipe(select(selectConfig));
   entitiesUrl = `${environment.apiUrl}entities.json`;
@@ -17,11 +17,13 @@ export class EntityService {
 
 
   constructor(private _http: HttpClient,
-    private _store: Store<IAppState>) {
-      this.lang = this.config$.language((val) => {
-          console.log('val');
-      })
-    }
+    private _store: Store<IAppState>) { }
+
+  ngOnInit() {
+    //this.lang = this._store.config.language;
+    //console.log('l',this.lang);
+  }
+
 
   getEntities(): Observable<IEntityHttp> {
     return this._http.get<IEntityHttp>(this.entitiesUrl);

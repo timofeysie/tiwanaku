@@ -98,6 +98,40 @@ It causes this error:
 Property 'language' does not exist on type 'Observable<IConfig>'.
 ```
 
+This One
+```
+this.lang$ = this._store.select(selectConfig.language);
+```
+
+Gives this error:
+```
+Property 'language' does not exist on type 'MemoizedSelector<IAppState, IConfig>'.
+```
+
+Trial and error here is not working out well.  It's not a straightforward framework to just try things that work.  Using Google to find out how to get a property from the store should be easy also, but the tutorials and examples all go through everything.  We'll get there.
+
+From [this SO answer](https://stackoverflow.com/questions/35633684/how-to-get-current-value-of-state-object-with-ngrx-store), it should be as simple as this:
+```
+this.lang = this._store.language;
+```
+
+or this:
+```
+this.lang = this._store.config.language;
+```
+
+Both cause an error saying that property does not exist on  ```Store<IAppState>```.
+
+So that's a clue at least.  We have three state objects, app, config, and entity.  The app.state is a combination of all of these plus error and router:
+```
+router?: RouterReducerState;
+entities: IEntityState;
+config: IConfigState;
+error: string;
+```
+
+
+
 
 ## Options for state management in Angular
 
