@@ -1,5 +1,4 @@
 import { Action } from '@ngrx/store';
-
 import { IConfig } from '../../models/config.interface';
 
 export enum EConfigActions {
@@ -19,4 +18,3 @@ export class GetConfigSuccess implements Action {
 export type ConfigActions =
   | GetConfig
   | GetConfigSuccess;
-

@@ -1,8 +1,8 @@
 <nav class="navbar d-flex">
   <a class="navbar-brand"
     routerLink="/">
-    <span *ngIf="(entities$ | async)">{{ (entities$ | async).length}}</span> 
-    {{ (config$ | async)?.adminName }}
+    <span>{{ (entities$ | async)?.length }}</span>
+    {{ (config$ | async)?.adminName }} - {{ (config$ | async)?.language }}
   </a>
   <div class="d-flex justify-content-end">
     <ul class="d-flex navbar-nav flex-row align-items-center">

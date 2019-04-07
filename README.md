@@ -7,6 +7,7 @@ It provides an example of managing application state using Angular with Redux ba
 
 ## Table of contents
 
+1. [Using store values](#using-store-values)
 1. [Options for state management in Angular](#options-for-state-management-in-Angular)
 1. [The data source](#the-data-source)
 1. [Fixing the tests](#fixing-the-tests)
@@ -19,15 +20,18 @@ It provides an example of managing application state using Angular with Redux ba
 5. [Redux Layout Tutorial App readme](#redux-Layout-Tutorial-App-readme)
 
 
-## Current work
+## Using store values
 
+Now that we have the store all set up to get our entities from the server, we have a few places where we want to use data other than the entities list.
 
 * Entity count in the title
 * Language config setting used in the API call
 
+The first is in the top level template, the second is in a service.
+
 ### The entity count in the title could be considered a memoization.  *In computing, memoization or memoisation is an optimization technique used primarily to speed up computer programs by storing the results of expensive function calls and returning the cached result when the same inputs occur again.*
 
-We will want to use a reducer or selector to get a slice of the entities store state to display next to the title.  I'm not sure this is the correct place for it (when we have a need for an entities selector, it might be more logical to have it there), the entity.selector.ts file can have this:
+We may want to use a reducer or selector to get a slice of the entities store state to display next to the title.  I'm not sure this is the correct place for it (when we have a need for an entities selector, it might be more logical to have it there), the entity.selector.ts file can have this:
 ```
 export const selectEntityCount = createSelector(
   selectCount,
@@ -45,8 +49,54 @@ So without adding anything to the store, we do this in the top level component t
 <span *ngIf="(entities$ | async)">{{ (entities$ | async).length}}</span>
 ```
 
-The ng if is there to stop errors from showing up before the list arrives from the server.  Assuming the store is the source of truth and simply getting them there from the store to get the length is not costing us any memory, why not?
+The *ngIf* is there to stop errors from showing up before the list arrives from the server.  A shorter more concise version is to use what is sometimes called the Elvis operator *<>*, which in this case is a question mark:
+```
+{{ (entities$ | async)?.length }}
+```
 
+Much better.
+
+Assuming the store is the source of truth and simply getting them there from the store to get the length is not costing us any memory, why not use the entities here to get the count?  That will satisfy the best practice of not storing state that can be derived.
+
+
+### Language config setting used in the API call
+
+In the entity service, we are doing this:
+```
+return this._http.get<IEntityHttp>(this.backendListUrl + '/en');
+```
+
+The language setting was added to the app config.
+
+```
+import { Store, select } from '@ngrx/store';
+import { IAppState } from '../store/state/app.state';
+import { GetConfig } from '../store/actions/config.actions';
+import { selectConfig } from '../store/selectors/config.selector';
+```
+
+And after that, how do we access the language setting?
+
+In the template as discussed before, we use the async pipe ```(entities$ | async)?.length```.
+
+How do we do that in our service?  You might think we could do this: ```(this.config$ | async).language)```.  We can import async from 'rxjs', but the value is undefined.
+
+The compiler didn't like that:
+```
+Module '"/Users/tim/repos/tiwanaku/node_modules/rxjs/index"' has no exported member 'async'.
+src/app/services/entity.service.ts(26,26): error TS2362: The left-hand side of an arithmetic operation must be of type 'any', 'number' or an enum type.
+src/app/services/entity.service.ts(26,48): error TS2339: Property 'language' does not exist on type 'number'.
+```
+
+Trying to set the var in the service constructor is also not going to work:
+```
+this.lang = this.config$.language;
+```
+
+It causes this error:
+```
+Property 'language' does not exist on type 'Observable<IConfig>'.
+```
 
 
 ## Options for state management in Angular
@@ -56,6 +106,8 @@ This app provides an example of managing application state using Redux in an Ang
 There is a UI state management implementation [from an artilce](https://www.pluralsight.com/guides/ui-state-management-with-redux-in-angular-4) by [Hristo Georgiev](https://github.com/hggeorgiev) on the georgiev-branch which currently has some upgrade issues.
 
 The master branch has a [working example](https://github.com/SantiagoGdaR/angular-ngrx) from the [article](https://medium.com/frontend-fun/angular-ngrx-a-clean-and-clear-introduction-4ed61c89c1fc) by [Santiago García Da Rosa](https://medium.com/@santiagogarcadarosa).
+
+Here is a good [boiler plate project](https://github.com/mdbootstrap/Angular-Bootstrap-Boilerplate) which provides an elaborate example of best practices for this kind of setup.
 
 Other options available for state management in Angular that can be looked at are:
 ```
@@ -85,6 +137,8 @@ We want to use the Q-code entity id for this.  Using Rxjs an observable stream n
 
 
 The entity list from Loranthifolia is a combination of WikiData and WikiMedia lists.  The first is a query from the Conchifolia server.  The second one returns the html sections from the Wikipedia page that has three categories of entities.  This list is then parsed and the resulting data is merged with the WikiData list.  This is why there are two slightly overlapping paramteter lists for the entity model.
+
+
 
 
 ### WikiData
@@ -199,6 +253,61 @@ Failed: StaticInjectorError(DynamicTestModule)[AppComponent -> Store]:
 ```
 
 So, as you can see, this is a WIP.  First will be finishing off the global error handling setup which will also help in testing the app.
+
+After putting the count in the title, running the test shows this problem:
+```
+ERROR in src/app/app.component.spec.ts(13,23): error TS2339: Property 'provideStore' does not exist on type 'typeof StoreModule'.
+07 04 2019 10:05:40.200:WARN [launcher]: Chrome have not captured in 60000 ms, killing.
+07 04 2019 10:05:41.184:INFO [launcher]: Trying to start Chrome again (1/2).
+07 04 2019 10:06:41.184:WARN [launcher]: Chrome have not captured in 60000 ms, killing.
+07 04 2019 10:06:42.106:INFO [launcher]: Trying to start Chrome again (2/2).
+07 04 2019 10:07:42.638:WARN [launcher]: Chrome have not captured in 60000 ms, killing.
+07 04 2019 10:07:43.450:ERROR [launcher]: Chrome failed 2 times (timeout). Giving up.
+```
+
+In the app.module, we have this:
+```
+imports: [ ... StoreModule.forRoot(appReducers),
+```
+
+But the spec is looking for it in app.component.  StoreModule is imported from @ngrx/store.  SO (StackOverflow) says:
+*It was deprecated, use "forRoot" instead.  The method "provideStore" has been renamed to "forRoot", so that one better understands what this method does.*
+
+So does that mean that the app.component spec should do this:
+```
+], imports: [ ... StoreModule.forRoot({}) ]
+```
+
+Next run (after killing the watch which couldn't find Chrome anymore), we get this:
+```
+Chrome 73.0.3683 (Mac OS X 10.14.2): Executed 9 of 9 (7 FAILED) (1.026 secs / 0.823 secs)
+```
+
+The brief is:
+```
+Chrome 73.0.3683 (Mac OS X 10.14.2) AppComponent should have as title 'app' FAILED
+	Expected 'angular-ngrx' to equal 'app'.
+Chrome 73.0.3683 (Mac OS X 10.14.2) AppComponent should have as title 'app' FAILED
+  Expected 'angular-ngrx' to equal 'app'.
+Chrome 73.0.3683 (Mac OS X 10.14.2) AppComponent should render title in a h1 tag FAILED
+  Failed: Cannot read property 'textContent' of null  
+Chrome 73.0.3683 (Mac OS X 10.14.2) EntityDetailsComponent should create FAILED
+  TypeError: Cannot read property 'cognitive_biasLabel' of undefined
+Chrome 73.0.3683 (Mac OS X 10.14.2) EntityDetailsComponent should create FAILED
+  TypeError: Cannot read property 'cognitive_biasLabel' of undefined
+Chrome 73.0.3683 (Mac OS X 10.14.2) EntitiesComponent should create FAILED
+  	Can't bind to 'entities' since it isn't a known property of 'app-entities'.
+  	1. If 'app-entities' is an Angular component and it has 'entities' input, then verify that it is part of this module.
+    ... long stack trace
+Chrome 73.0.3683 (Mac OS X 10.14.2) ConfigService should be created FAILED
+    Error: StaticInjectorError(DynamicTestModule)[ConfigService -> HttpClient]:
+```
+
+Since the app is working, we know that these are all just test config problems introduced by the work we've just completed.
+
+
+
+
 
 
 ## Global error handling

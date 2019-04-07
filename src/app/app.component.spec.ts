@@ -8,9 +8,9 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent
-      ], imports: [ 
+      ], imports: [
           RouterTestingModule,
-          StoreModule.provideStore({}) ]
+          StoreModule.forRoot({}) ]
     }).compileComponents();
   }));
   it('should create the app', async(() => {
