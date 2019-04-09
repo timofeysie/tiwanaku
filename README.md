@@ -66,39 +66,19 @@ In the entity service, we are doing this:
 return this._http.get<IEntityHttp>(this.backendListUrl + '/en');
 ```
 
-The language setting was added to the app config.
+The language setting is in the app config.  How do we access the language setting for the API call?  In the template as discussed before, we use the async pipe ```(entities$ | async)?.length```.
 
-```
-import { Store, select } from '@ngrx/store';
-import { IAppState } from '../store/state/app.state';
-import { GetConfig } from '../store/actions/config.actions';
-import { selectConfig } from '../store/selectors/config.selector';
-```
-
-And after that, how do we access the language setting?
-
-In the template as discussed before, we use the async pipe ```(entities$ | async)?.length```.
-
-How do we do that in our service?  You might think we could do this: ```(this.config$ | async).language)```.  We can import async from 'rxjs', but the value is undefined.
-
-The compiler didn't like that:
-```
-Module '"/Users/tim/repos/tiwanaku/node_modules/rxjs/index"' has no exported member 'async'.
-src/app/services/entity.service.ts(26,26): error TS2362: The left-hand side of an arithmetic operation must be of type 'any', 'number' or an enum type.
-src/app/services/entity.service.ts(26,48): error TS2339: Property 'language' does not exist on type 'number'.
-```
-
-Trying to set the var in the service constructor is also not going to work:
+How do we do that in our service?  Trying to set the var in the service constructor is not going to work:
 ```
 this.lang = this.config$.language;
 ```
 
-It causes this error:
+Causes this error:
 ```
 Property 'language' does not exist on type 'Observable<IConfig>'.
 ```
 
-This One
+This one
 ```
 this.lang$ = this._store.select(selectConfig.language);
 ```
@@ -130,7 +110,83 @@ config: IConfigState;
 error: string;
 ```
 
+Another part of the answer from above shows this:
+```
+let x = this._store.value.StateReducer.dataForUpdate;
+```
 
+So what reducer should we be using?  Trying this:
+```
+this.lang = this._store.configReducers.language;
+```
+
+Results in this message:
+```
+Property 'configReducers' does not exist on type 'Store<IAppState>'.
+```
+
+Another example out there shows a form like this:
+```
+this.lang$ = this.store.select((state) => state.config.language);
+```
+
+Something like this was tried before, since we were trying to get an async value, it makes sense to access it in a callback like this.  But, no dice.  Do we need to create a new reducer to get this value?
+
+I thought reducers were for mutating the state.  At least that's what our current config reducer does.
+
+If we wanted to set the language, we would need a reducer, no?  We need a selector, no?  Apparently not.  [The answer for this SO question](https://stackoverflow.com/questions/41898827/extracting-specific-data-from-ngrx-store/41900898) puts it pretty clearly.  You need to put a value in the store which requires an action.
+
+You would think that the GetConfig would return the json from the config file in the data directory.  And indeed we get the value in the template.  This is just about using one of it's values in the TypeScript.
+
+```
+Property 'language' does not exist on type 'MemoizedSelector<IAppState, IConfig>'.
+```
+
+Since the IAppState contains the config class, we should be asking for config.language here.
+
+```
+Property 'config' does not exist on type 'Observable<IConfig>'.
+```
+
+We just need the appropriate RxJs way of getting the property in a functional manner here.  Sorry it's not so obvious what it is.  This part of the project is called a steep learning curve.
+
+The basic observable approach is to subscribe to it.  Finally read [an answer by sashoalm here](https://stackoverflow.com/questions/35633684/how-to-get-current-value-of-state-object-with-ngrx-store/43057702) that shows one way that works:
+```
+this.config$.subscribe(x => {
+    console.log(x)
+});
+```
+
+In the console we get our config object.  But trying to get properties from this fails saying that the object is not defined.
+```
+ERROR TypeError: Cannot read property 'language' of null
+    at SafeSubscriber._next (entity.service.ts:21)
+    at 
+```
+
+Funny enough, even if we check first for undefined, the error still shows up:
+```
+if (typeof config.language !== 'undefined') {
+    console.log('lang',config.language);
+}
+```
+
+That is because at first config is null, not undefined, as that is the initial state.  This will work to get our value:
+```
+this.config$.subscribe(config => {
+    if (typeof config !== 'undefined' && config !== null) {
+        if (typeof config.language !== 'undefined') {
+            this.lang = config.language;
+        }
+    }
+});
+```
+
+However, if the language setting is used in the API call, it shows up as undefined since that value is not available right away.  We could check for this an provide a default of en before the call is made, but that is defeating the purpose of having a single source of truth.
+
+So the next challenge is to find our where that default can be set.  Right now, searching the code, there is no where that the initial value of the properties of the config object are set, because the config.json is actually the default set of initial values.
+
+So then another approach would be to delay that API request until the store can provide that value.  What is the normal way to do this?
 
 
 ## Options for state management in Angular

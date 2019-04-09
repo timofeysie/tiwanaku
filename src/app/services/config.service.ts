@@ -14,6 +14,7 @@ export class ConfigService {
   constructor(private _http: HttpClient) { }
 
   getConfig(): Observable<IConfig> {
+    console.log('this.configUrl',this.configUrl);
     return this._http.get<IConfig>(this.configUrl);
   }
 }

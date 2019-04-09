@@ -17,11 +17,23 @@ export class EntityService implements OnInit {
 
 
   constructor(private _http: HttpClient,
-    private _store: Store<IAppState>) { }
+    private _store: Store<IAppState>) {
+      this.config$.subscribe(config => {
+          if (typeof config !== 'undefined' && config !== null) {
+            if (typeof config.language !== 'undefined') {
+              this.lang = '/'+config.language;
+            }
+          }
+      });
+  }
 
   ngOnInit() {
-    //this.lang = this._store.config.language;
-    //console.log('l',this.lang);
+    // config$ is an 'Observable<IConfig>'
+    this.config$.subscribe(x => {
+      if (x.language) {
+        console.log(x)
+      }
+    });
   }
 
 
@@ -30,8 +42,10 @@ export class EntityService implements OnInit {
   }
 
   getList(): Observable<IEntityHttp> {
-    console.log('lang', (this.config$));
-    return this._http.get<IEntityHttp>(this.backendListUrl + '/en');
+    if (!this.lang) {
+      this.lang = '/en';
+    }
+    return this._http.get<IEntityHttp>(this.backendListUrl + this.lang);
   }
 
 }
