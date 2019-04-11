@@ -148,7 +148,7 @@ Since the IAppState contains the config class, we should be asking for config.la
 Property 'config' does not exist on type 'Observable<IConfig>'.
 ```
 
-We just need the appropriate RxJs way of getting the property in a functional manner here.  Sorry it's not so obvious what it is.  This part of the project is called a steep learning curve.
+We just need the appropriate RxJs way of getting the property in a functional manner here.  Sorry it's not so obvious what it is.  This is part of the *steep learning curve* everyone talks about when using Redux.
 
 The basic observable approach is to subscribe to it.  Finally read [an answer by sashoalm here](https://stackoverflow.com/questions/35633684/how-to-get-current-value-of-state-object-with-ngrx-store/43057702) that shows one way that works:
 ```
@@ -161,7 +161,7 @@ In the console we get our config object.  But trying to get properties from this
 ```
 ERROR TypeError: Cannot read property 'language' of null
     at SafeSubscriber._next (entity.service.ts:21)
-    at 
+    ...
 ```
 
 Funny enough, even if we check first for undefined, the error still shows up:
@@ -187,6 +187,66 @@ However, if the language setting is used in the API call, it shows up as undefin
 So the next challenge is to find our where that default can be set.  Right now, searching the code, there is no where that the initial value of the properties of the config object are set, because the config.json is actually the default set of initial values.
 
 So then another approach would be to delay that API request until the store can provide that value.  What is the normal way to do this?
+
+Looking at other answers to the SO question linked to above, a synchronous .subscirbe() is the accepted answer.  The answer changed for ngrx 1 to 2.  This project has
+```
+"@ngrx/core": "^1.2.0",
+"@ngrx/effects": "^6.1.0",
+"@ngrx/router-store": "^6.1.0",
+"@ngrx/store": "^6.1.0",
+```
+
+So is that version 1 or 6?
+
+Anyhow, the example shown to 2+:
+```
+store.take(1).subscribe(s => state = s);
+```
+
+Causes a compile error:
+```
+Property 'take' does not exist on type 'Store<any>'.
+```
+
+Same with withLatestFrom() or combineLatest() methods.  These are functions in the subscription chain are aligned with the spirit of Observables+Ngrx.  An article by Jim Lynch may be helpful: *The Basics of "ngrx/effects", @Effect, and Async Middleware for "ngrx/store" in Angular 2.*
+
+Another answer shows using the State object like this:
+```
+let propertyValue = state.getValue().config;
+```
+
+However, in the constructor and the get list function, the config is still null.
+
+Going with a different default config state approach, we can try this in state/config.state.ts:
+```
+export const initialConfigState: IConfigState = {
+  config: {
+    adminName: 'temp',
+    permissions: ['temp'],
+    language: 'en'
+  }
+};
+```
+
+And this will work.  Then we don't really need to have the assets/data/config.json file.  Probably this is not where we want to store the user options anyhow.  This demo didn't really address user management.  If we want to support multiple users, then more analysis of how we want to do that is needed.
+
+A simple approach is to just have English set as the default here, and let the user change the value by hand until we can support user login and all that fun OAuth stuff.
+
+Saw this in a Cognito React app article:
+```
+handleSubmit = async event => {
+  event.preventDefault();
+
+  try {
+    await Auth.signIn(this.state.email, this.state.password);
+    alert("Logged in");
+  } catch (e) {
+    alert(e.message);
+  }
+}
+```
+
+That's using async/await to get the value of the state.
 
 
 ## Options for state management in Angular

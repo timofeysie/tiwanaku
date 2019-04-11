@@ -6,5 +6,9 @@ export interface IConfigState {
 }
 
 export const initialConfigState: IConfigState = {
-  config: null
+  config: {
+    adminName: 'Cognitive biases',
+    permissions: ['entities'],
+    language: 'en'
+  }
 };
