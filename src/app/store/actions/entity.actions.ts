@@ -19,8 +19,7 @@ export class GetEntitiesSuccess implements Action {
 
 export class GetEntity implements Action {
   public readonly type = EEntityActions.GetEntity;
-  constructor(public payload: number) {
-  }
+  constructor(public payload: string) { }
 }
 
 export class GetEntitySuccess implements Action {
@@ -28,4 +27,5 @@ export class GetEntitySuccess implements Action {
   constructor(public payload: IEntity) { }
 }
 
+/** TypeScript union type */
 export type EntityActions = GetEntities | GetEntitiesSuccess | GetEntity | GetEntitySuccess;

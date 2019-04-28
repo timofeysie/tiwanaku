@@ -1,12 +1,10 @@
 import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { IEntityHttp } from '../models/http-models/entity-http.interface';
 import { Store, select } from '@ngrx/store';
 import { IAppState } from '../store/state/app.state';
-import { GetConfig } from '../store/actions/config.actions';
 import { selectConfig } from '../store/selectors/config.selector';
 import { State } from '@ngrx/store';
 

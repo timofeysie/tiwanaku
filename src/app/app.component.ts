@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'angular-ngrx';
+  title = 'cognitive biases';
   config$ = this._store.pipe(select(selectConfig));
   error$: Observable<any>;
   entities$ = this._store.pipe(select(selectEntityList));

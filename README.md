@@ -20,6 +20,7 @@ It provides an example of managing application state using Angular with Redux ba
 5. [Redux Layout Tutorial App readme](#redux-Layout-Tutorial-App-readme)
 
 
+
 ## Using store values
 
 Now that we have the store all set up to get our entities from the server, we have a few places where we want to use data other than the entities list.
@@ -249,6 +250,41 @@ handleSubmit = async event => {
 That's using async/await to get the value of the state.
 
 
+Another tip on the [NgRx: tips & tricks]() by Adrian Fâciu was about naming the payloads.
+
+The article says something like *when a payload is needed in the action, we can name the property simply payload or have a payload object that has other properties...*
+
+An example is this:
+```
+constructor(readonly payload: { message: string }) { }
+```
+
+In the entity.actions.ts file for example we have this:
+```Javascript
+export class GetEntity implements Action {
+  public readonly type = EEntityActions.GetEntity;
+  constructor(public payload: string) {
+    console.log('payload',payload);
+  }
+}
+```
+
+Trying out this:
+```
+constructor(public payload: { entityId: string}) {
+```
+
+Causes this error:
+```
+core.js:1673 ERROR TypeError: Cannot read property 'filter' of null
+    at SwitchMapSubscriber.project (entity.effects.ts:26)
+    at
+```
+
+So there would be more modifications in the boilerplate code to make that work.
+
+
+
 ## Options for state management in Angular
 
 This app provides an example of managing application state using Redux in an Angular application based on [NgRx](https://ngrx.io/).
@@ -390,7 +426,6 @@ entity.actions.GetEntitySuccess impl. Action {type = EEntityActions.GetEntitySuc
 ```
 
 
-
 ## Fixing the tests
 
 Fixing the tests after this change became a challenge.  The tests were not updated in the Redux example, so 8 out of 9 tests were failing with setup issues.
@@ -455,7 +490,92 @@ Chrome 73.0.3683 (Mac OS X 10.14.2) ConfigService should be created FAILED
 
 Since the app is working, we know that these are all just test config problems introduced by the work we've just completed.
 
+After getting some store values working in the app, the test situation has changed a bit.  Currently 6 out of 9 are failing.  We will work through these errors one at a time.
 
+```
+Error: StaticInjectorError(DynamicTestModule)[Store -> StateObservable]:
+  StaticInjectorError(Platform: core)[Store -> StateObservable]:
+    NullInjectorError: No provider for StateObservable!
+```
+
+Tried this in the spec:
+```
+import { StateObservable } from '@ngrx/store';
+
+describe('EntityService', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [EntityService, Store, StateObservable]
+```
+
+But then the error changed to:
+```
+Error: Can't resolve all parameters for StateObservable: (?).
+```
+
+This is the entity.service.spec.  A [SO answer](https://stackoverflow.com/questions/46544604/angular-2-component-with-ngrx-errors-when-run-unit-testing) gives an example of creating an initial state and mocking the store and using it like this:
+```
+const initialState = {...};
+providers:[ {provide:Store, useValue: new MockStore(initialState)} ]
+```
+
+The [official testing docs](https://ngrx.io/guide/store/testing) have an example that does a similar thing, but uses a pre-made mock *state*.
+
+```
+import { provideMockStore } from '@ngrx/store/testing';
+...
+let store: MockStore<{ loggedIn: boolean }>;
+const initialState = { loggedIn: false };
+...
+providers:[ provideMockStore({ initialState }) ]
+```
+
+But it causes this error:
+```
+ERROR in src/app/services/entity.service.spec.ts(6,34): error TS2307:
+Cannot find module '@ngrx/store/testing'.
+src/app/services/entity.service.spec.ts(9,14): error TS2304:
+Cannot find name 'MockStore'.
+```
+
+Another approach would be to use the Jasmine spy object.
+```
+const testStore = jasmine.createSpyObj('Store', ['select']);
+```
+
+Since the mock store idea didn't work out, we need to do some more searching.  Even with the store spy, we still get the *Can't resolve all parameters for StateObservable* error.
+
+#
+
+After a week working with React, Angular routing testing and AWS Cognito integration, it's time to get a handle on what is happening with Tiwanaku NgRx and apply some of the lessons learned here.
+
+Summing up the current state of the tests:
+```
+9 specs, 5 failures
+AppComponent should render title in a h1 tag
+Expected '' to contain ''.
+...
+Failed: Cannot read property 'entities' of undefined
+TypeError: Cannot read property 'entities' of undefined
+    at http://localhost:9876/_karma_webpack_/webpack:/src/app/store/selectors/entity.selector.ts:10:34
+...
+EntitiesComponent should create
+[object ErrorEvent] thrown
+EntitiesComponent should create
+Failed: Template parse errors:
+Can't bind to 'entities' since it isn't a known property of 'app-entities'.
+...
+EntityComponent should create
+Failed: Template parse errors:
+Can't bind to 'entity' since it isn't a known property of 'app-entity-details'.
+...
+EntityService should be created
+Error: Can't resolve all parameters for StateObservable: (?).
+Error: Can't resolve all parameters for StateObservable: (?).
+```
+
+
+Seems like mainly config issues.  Will start with the single entity view, since that is mostly failing in the app right now.  The entities view is doing what it should be at this moment.
 
 
 
