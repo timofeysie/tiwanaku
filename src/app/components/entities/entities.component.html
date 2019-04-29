@@ -7,9 +7,9 @@
   </thead>
   <tbody>
     <tr *ngFor="let entity of entities"
-      (click)="navigateToEntity(entity.cognitive_bias)">
+      (click)="navigateToEntity(entity)">
       <td>{{ entity.cognitive_biasLabel }}</td>
-      <td>{{ entity.cognitive_biasDescription }} 
+      <td>{{ entity.cognitive_biasDescription }}
           {{ entity.wikiMedia_description }}</td>
     </tr>
   </tbody>

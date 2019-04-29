@@ -11,5 +11,7 @@ export class EntityDetailsComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    console.log('entity',this.entity);
+  }
 }

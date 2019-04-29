@@ -48,4 +48,9 @@ export class EntityService implements OnInit {
     return this._http.get<IEntityHttp>(this.backendListUrl + this.lang);
   }
 
+  getOfflineList(): Observable<Object> {
+    const list = this._http.get('../../assets/data/wikidata.json');
+    return list;
+  }
+
 }

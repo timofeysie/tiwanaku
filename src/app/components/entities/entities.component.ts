@@ -8,14 +8,14 @@ import { IEntity } from '../../models/entity.interface';
 })
 export class EntitiesComponent implements OnInit {
     @Input() entities: IEntity[];
-    @Output() entitySelected: EventEmitter<number> = new EventEmitter();
-    
+    @Output() entitySelected: EventEmitter<Object> = new EventEmitter();
+
     constructor() { }
 
     ngOnInit() { }
 
-    navigateToEntity(id: number) {
-            this.entitySelected.emit(id);
+    navigateToEntity(entity: Object) {
+            this.entitySelected.emit(entity);
     }
 
 }

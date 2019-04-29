@@ -1,8 +1,8 @@
 <div *ngIf="entity">
   <p>
-    Name: {{ ( entity | async)?.cognitive_biasLabel }}
+    Name: {{ entity.cognitive_biasLabel }}
   </p>
   <p>
-    Description: {{ ( entity | async)?.cognitive_biasDescription }}
+    Description: {{ entity.cognitive_biasDescription }}
   </p>
 </div>
