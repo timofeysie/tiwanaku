@@ -7,6 +7,7 @@ It provides an example of managing application state using Angular with Redux ba
 
 ## Table of contents
 
+1. [Upgrading to Angular 7.2 and the entity detail](#upgrading-to-Angular-7.2-and-the-entity-detail)
 1. [Using store values](#using-store-values)
 1. [Options for state management in Angular](#options-for-state-management-in-Angular)
 1. [The data source](#the-data-source)
@@ -18,6 +19,121 @@ It provides an example of managing application state using Angular with Redux ba
 3. [Object is possibly 'null'.ts(2531)](#object-is-possibly-'null'.ts(2531))
 4. [Getting started](#getting-started)
 5. [Redux Layout Tutorial App readme](#redux-Layout-Tutorial-App-readme)
+
+
+## Upgrading to Angular 7.2 and the entity detail
+
+While trying to fix the entity detail page, which always get's the first element on the list from the state, we decided to upgrade to Angular 7.2 to take advantage of the router improvements.
+
+Since this app was using the ageing Angular 6 deps (and because Angular 7.2 allows us to pass objects to a route so we can display the object on the new page and start the API calls to go thru all the re-directs to get the detail contents), it's time up upgrade?
+
+This turns out to be a lot more than just changing some numbers in the package.  It involves:
+* Angular dependencies
+* Angular dev dependencies
+* Dependencies; Core-js and Zone.js
+* Dev dependencies; Types, codelyzer, karma tools, jasmine, protractor and tslint
+* The new version 3+ of TypeScript
+* Latest version 6+ of RxJS
+* Latest version 4+ of Webpack
+* Enable Ivy Renderer in the tsconfig.json
+
+p.s.  Watch out for breaking changes in forms which we don't have.
+
+The full article is [here](https://medium.com/@jeroenouw/upgrade-to-angular-7-beta-within-10-minutes-c14fc380edd) if you can afford it.
+
+Then something that wasn't in the Medium article:
+```
+tsconfig.json(8,5): error TS5023: Unknown compiler option 'enableIvy'.
+Error: tsconfig.json(8,5): error TS5023: Unknown compiler option 'enableIvy'.
+    at AngularCompilerPlugin._setupOptions (/Users/tim/repos/tiwanaku/node_modules/@ngtools/webpack/src/angular_compiler_plugin.js:94:19)
+```
+
+It was a mix up between "compilerOptions" and "angularCompilerOptions".  Details boy!
+
+But that's not all!
+```
+ERROR in ./node_modules/@angular-devkit/build-angular/src/angular-cli-files/models/jit-polyfills.js
+Module not found: Error: Can't resolve 'core-js/es7/reflect' in '/Users/tim/repos/tiwanaku/node_modules/@angular-devkit/build-angular/src/angular-cli-files/models'
+ERROR in The Angular Compiler requires TypeScript >=3.1.1 and <3.3.0 but 3.4.5 was found instead.
+ℹ ｢wdm｣: Failed to compile.
+```
+
+Maybe just using the *latest* of everything is not such a good idea?  What works at one point in time may not work at another.
+
+```
+npm i typescript@3.1.6 --save-dev --save-exact
+```
+
+Next,
+```
+ERROR in ./node_modules/@angular-devkit/build-angular/src/angular-cli-files/models/jit-polyfills.js
+Module not found: Error: Can't resolve 'core-js/es7/reflect' in '/Users/tim/repos/tiwanaku/node_modules/@angular-devkit/build-angular/src/angular-cli-files/models'
+ERROR in ./src/polyfills.ts
+Module not found: Error: Can't resolve 'core-js/es7/reflect' in '/Users/tim/repos/tiwanaku/src'
+```
+
+SO: add paths to compilerOptions in tsconfig.json.  Again with the compiler options!
+
+Only then did the app run.  Still better of than Hertz and Accentura.
+
+### Router improvements
+
+With the new Angular in place, we should be able to do something like this:
+```
+navigateWithState() {
+  this.router.navigateByUrl('/123', { state: { hello: 'world' } });
+}
+```
+
+Then on the detail page:
+```
+ngOnInit() {
+  this.state$ = this.activatedRoute.paramMap
+    .pipe(map(() => window.history.state))
+}
+```
+
+Really?  Get it from the window.history?  We wouldn't need any improvements in the router to do that ourselves, would we?  It's a classic global state.
+
+Anyhow, not sure how this changes the routes.  Before we had this:
+```
+{ path: 'entity/:cognitive_bias', component: EntityComponent },
+```
+
+If we can pass the whole entity object through the route, then we don't need to pass the id anymore.  The only problem is that it looks like we need some more TypeScript help:
+```
+ERROR in src/app/containers/entity/entity.component.ts(20,26): error TS2339: Property 'activatedRoute' does not exist on type 'EntityComponent'.
+src/app/containers/entity/entity.component.ts(21,13): error TS2552: Cannot find name 'map'. Did you mean 'Map'?
+```
+
+Adding this to the compiler options didn't help:
+```
+"lib": [
+  "es2017",
+  "dom",
+  "es6",
+  "es5"
+```
+
+Finally read the comments under the article and discovered to correct import statement to use.  Always read the comments!
+
+
+### Router as the source of truth
+
+In the [NrWl blog](https://blog.nrwl.io/managing-state-in-angular-applications-22b75ef5625f), we learn that Rule 5 is *Always treat Router as the source of truth*
+
+Why?  *Since the user can always interact with the URL directly, we should treat the router as the source of truth and the initiator of actions. In other words, the router should invoke the reducer, not the other way around.*
+
+How does this work?  *the router parses the URL and creates a router state snapshot. It then invokes the reducer with the snapshot, and only after the reducer is done it proceeds with the navigation.*
+
+*RouterConnectedToStoreModule will set up the router in such a way that right after the URL gets parsed and the future router state gets created, the router will dispatch the ROUTER_NAVIGATION action*
+
+*the router will wait until this observable completes. If the reducer throws an exception, the router will cancel the navigation.*
+
+Got all that?  It all boils down to using something called the *RouterConnectedToStoreModule*.
+
+Create a new reducer: ROUTER_NAVIGATION.  Looking at the project in the monorepo we never actaully implemented this part.
+
 
 
 
@@ -577,6 +693,24 @@ Error: Can't resolve all parameters for StateObservable: (?).
 
 Seems like mainly config issues.  Will start with the single entity view, since that is mostly failing in the app right now.  The entities view is doing what it should be at this moment.
 
+One of the problems was the first entity was being chosen each time, no matter which one was actually chosen from the list.
+
+It seems like a good idea: don't store anything in the the state that can be re-produced.  The entity description is such a thing.  But we have it right there; why waste more code getting it again if we can just pass it to the next page?
+
+What was the project where we made the router the source of truth?  That was in our [fledgling monon-repo](https://github.com/timofeysie/quallasuyu) I think.
+
+You're right, whoever you are.  In our notes: *Since the user can always interact with the URL directly, we should treat the router as the source of truth and the initiator of actions. The router should invoke the reducer.  StoreRouterConnectingModule parses the URL and creates a router state snapshot. It then invokes the reducer with the snapshot, and only after the reducer is done it proceeds with the navigation.*
+
+It is an [nx article](https://github.com/vsavkin/state_management_ngrx4).  The impressive article walks readers through an ad-hoc state-management strategy with a few issues, then fixes the issues in ad-hoc way and finally refactors the app using NgRx 4.
+
+Might want to think about doing that here.  The plan actually was to implement what we have going on here in the mono-repo, but since it's only a few weeks old, it would be prudent to get more familiar witch what NrWl is pushing on us with their "power ups".
+
+[This is the blog version](https://blog.nrwl.io/managing-state-in-angular-applications-22b75ef5625f) of the article.
+
+
+* optimistic updates use a separate action called UNRATE, to handle the case when the server rejects and update.
+* change the model to be immutable.
+* RouterConnectedToStoreModule will set up the router in such a way that right after the URL gets parsed and the future router state gets created, the router will dispatch the ROUTER_NAVIGATION action
 
 
 

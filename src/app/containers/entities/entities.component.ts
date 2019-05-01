@@ -18,8 +18,8 @@ export class EntitiesComponent implements OnInit {
         this._store.dispatch(new GetEntities());
     }
 
-    navigateToEntity(entity: Object) {
-        this._router.navigate(['entity', entity['cognitive_bias']]);
-    }
+    // navigateToEntity(entity: Object) {
+    //     this._router.navigate(['entity', { state: entity}]);
+    // }
 
 }

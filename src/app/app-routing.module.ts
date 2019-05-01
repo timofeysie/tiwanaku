@@ -6,7 +6,7 @@ import { EntityComponent } from './containers/entity/entity.component';
 
 const routes: Routes = [
   { path: 'entities', component: EntitiesComponent },
-  { path: 'entity/:cognitive_bias', component: EntityComponent },
+  { path: 'entity', component: EntityComponent },
   { path: '', redirectTo: '/entities', pathMatch: 'full' }
 ];
 

@@ -31,7 +31,7 @@ export class EntityEffects {
   @Effect()
   getEntities$ = this._actions$.pipe(
     ofType<GetEntities>(EEntityActions.GetEntities),
-    switchMap(() => this._entityService.getList()),
+    switchMap(() => this._entityService.getOfflineList()),
     switchMap((entityHttp: IEntityHttp) => of(new GetEntitiesSuccess(entityHttp.list)))
   );
 

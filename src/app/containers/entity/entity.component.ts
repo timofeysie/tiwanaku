@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { Router, NavigationStart, ActivatedRoute } from '@angular/router';
 import { IAppState } from '../../store/state/app.state';
 import { selectSelectedEntity } from '../../store/selectors/entity.selector';
 import { GetEntity } from '../../store/actions/entity.actions';
@@ -10,13 +12,18 @@ import { GetEntity } from '../../store/actions/entity.actions';
     styleUrls: ['./entity.component.css']
 })
 export class EntityComponent implements OnInit {
-    entity$ = this._store.pipe(select(selectSelectedEntity));
-
+    entity$: any;
     constructor(
-        private _store: Store<IAppState>,
-        private _route: ActivatedRoute) { }
+      public activatedRoute: ActivatedRoute,
+      public router: Router,
+      private _store: Store<IAppState>,
+      private _route: ActivatedRoute) { }
 
     ngOnInit() {
-        this._store.dispatch(new GetEntity(this._route.snapshot.params.cognitive_bias));
+      this.entity$ = this.activatedRoute.paramMap.pipe(
+        map(() => window.history.state.data)
+      );
+      console.log('this.entity$',this.entity$)
+      //this._store.dispatch(new GetEntity(this._route.snapshot.params.cognitive_bias));
     }
 }

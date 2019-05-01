@@ -6,9 +6,10 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let entity of entities"
-      (click)="navigateToEntity(entity)">
-      <td>{{ entity.cognitive_biasLabel }}</td>
+    <tr *ngFor="let entity of entities">
+      <td>
+        <a routerLink="/entity" [state]="{ data: entity }">{{ entity.cognitive_biasLabel }}</a>
+      </td>
       <td>{{ entity.cognitive_biasDescription }}
           {{ entity.wikiMedia_description }}</td>
     </tr>
