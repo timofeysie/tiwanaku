@@ -132,7 +132,33 @@ How does this work?  *the router parses the URL and creates a router state snaps
 
 Got all that?  It all boils down to using something called the *RouterConnectedToStoreModule*.
 
-Create a new reducer: ROUTER_NAVIGATION.  Looking at the project in the monorepo we never actaully implemented this part.
+Create a new reducer: ROUTER_NAVIGATION.  Looking at the project in the monorepo we never actaully implemented this part.  That should probably happen next.  For now we can pass the whole entity via the router, but it's not that simple.
+
+Now, the route will change to /entity, without an id, which means that if a person tries to share that link, the app will break.  We want to have both full object and the id in the url.  However, the portion of the app that relies on the object will still break.
+
+We want the user to see the label and description while the WikiMedia content is loading, so even if we have the id in the url, we will have to then get the full list from the store and match the id to the correct item to do this.  That should be pretty quick as no API call would be needed, it's just extra work when it feels like we should be done with this now and moving on to getting the WikiMedia lists and merging them into the WikiData list to have a somewhat complete list.  Oh well, such is a developers side project life.
+
+This awfully long un-lintable line produces what we want:
+```
+<a routerLink="/entity/{{entity.cognitive_bias.substring(entity.cognitive_bias.lastIndexOf('/'),entity.cognitive_bias.length)}}" [state]="{ data: entity }">{{ entity.cognitive_biasLabel }}</a>
+```
+
+```
+http://localhost:4200/entity/Q18570
+```
+
+Or we could encode and pass the entire string:
+```
+http://www.wikidata.org/entity/Q18570
+```
+
+Not sure which is worse.  Another option is to map the list on load and add the id to each object, but that's another step/layer that makes the app more complicated.  For now, if the user navigates to the detail page, we can use that value to get both the WikiData item and the detail page.  If someone does that work of course.
+
+
+Pipes let you combine multiple functions into a single function.  You need to call subscribe() to produce a result through the pipe.
+
+Angular prefers combining operators with pipes, rather than chaining. But chaining is used in many RxJS examples.
+
 
 
 
