@@ -21,6 +21,88 @@ It provides an example of managing application state using Angular with Redux ba
 5. [Redux Layout Tutorial App readme](#redux-Layout-Tutorial-App-readme)
 
 
+
+## Testing Redux in Angular
+
+The problem: TOTAL: 6 FAILED, 3 SUCCESS
+
+After implementing the basics of Redux in the app, the unit tests need the same love.
+
+
+### Number 1
+```
+Chrome 75.0.3770 (Mac OS X 10.14.2) AppComponent should render title in a h1 tag FAILED
+	Error: Expected '' to contain ''.
+```
+
+Love it.  In this case, Google is not going to help.  I will bet it's this one:
+```
+it('should render title in a h1 tag', async(() => {
+  const fixture = TestBed.createComponent(AppComponent);
+  fixture.detectChanges();
+  const compiled = fixture.debugElement.nativeElement;
+  console.log('sdf',compiled.querySelector('span').textContent);
+  expect(compiled.querySelector('span').textContent).toContain('');
+}));
+```
+
+The span on the first page looks like this:
+```
+<span>{{ (entities$ | async)?.length }}</span>
+```
+
+Since that variable is using the async pipe, what's the bet that the test is not async, but should?
+
+This is what we are doing in the class:
+```
+entities$ = this._store.pipe(select(selectEntityList));
+```
+
+And the unit test error:
+```
+Failed: Cannot read property 'entities' of undefined
+```
+
+In the official docs they show this:
+```
+items$ = this.store.pipe(select(fromFeature.selectFeatureItems));
+```
+
+Very similar.  In the example spec:
+```
+import * as fromRoot from '../reducers';
+import * as fromFeature from '../feature/reducers';
+import * as DataActions from '../actions/data';
+...
+let component: MyComponent;
+let fixture: ComponentFixture<MyComponent>
+let store: Store<fromFeature.State>
+...
+
+```
+
+Since we have different names, what is *fromRoot*
+```
+import * as appReducers from './store/reducers/app.reducers';
+import * as entityReducers from './store/reducers/entity.reducers';
+import * as EntityActions from './store/actions/entity.actions';
+...
+let component: AppComponent;
+let store: Store<fromFeature.State>
+...
+StoreModule.forRoot({
+...appReducers.entityReducers
+```
+
+Nice try, but after that, the situation gets worse: TOTAL: 8 FAILED, 1 SUCCESS
+```
+AppComponent should have as title 'app' FAILED
+	Failed: combineReducers is not defined
+```
+
+Fixed a few errors, but now it's back to the initial errors.  This might take some time...
+
+
 ## Upgrading to Angular 7.2 and the entity detail
 
 While trying to fix the entity detail page, which always get's the first element on the list from the state, we decided to upgrade to Angular 7.2 to take advantage of the router improvements.

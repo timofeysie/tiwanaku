@@ -5,10 +5,12 @@ import { Store, select } from '@ngrx/store';
 import { StateObservable } from '@ngrx/store';
 
 describe('EntityService', () => {
-  const testStore = jasmine.createSpyObj('Store', ['select']);
+    const testStore = jasmine.createSpyObj('Store', ['select']);
+    const fakeStateObservable = { } as StateObservable;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ EntityService, Store, StateObservable ],
+      providers: [ EntityService, Store, { provide: StateObservable, useValue: fakeStateObservable} ],
       imports: [ HttpClientModule ]
     });
   });
