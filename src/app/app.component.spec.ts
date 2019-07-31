@@ -5,11 +5,16 @@ import { StoreModule } from '@ngrx/store';
 import * as appReducers from './store/reducers/app.reducers';
 import * as entityReducers from './store/reducers/entity.reducers';
 import * as EntityActions from './store/actions/entity.actions';
+import { Store } from '@ngrx/store';
+import { MockStore } from '@ngrx/store/testing';
+import { cold } from 'jasmine-marbles';
 
 describe('AppComponent', () => {
   let component: AppComponent;
   //let fixture: ComponentFixture<AppComponent>
-  let store: Store<fromFeature.State>
+  let store: MockStore<{ entities: any, selectedEntity: any }>;
+  const initialState = { entities: any, selectedEntity: any };
+  //let store: Store<fromFeature.State>
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
