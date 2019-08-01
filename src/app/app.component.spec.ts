@@ -13,7 +13,7 @@ describe('AppComponent', () => {
   let component: AppComponent;
   //let fixture: ComponentFixture<AppComponent>
   let store: MockStore<{ entities: any, selectedEntity: any }>;
-  const initialState = { entities: any, selectedEntity: any };
+  const initialState = { entities: null, selectedEntity: null };
   //let store: Store<fromFeature.State>
 
   beforeEach(async(() => {

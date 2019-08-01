@@ -102,6 +102,114 @@ AppComponent should have as title 'app' FAILED
 
 Fixed a few errors, but now it's back to the initial errors.  This might take some time...
 
+To fix some errors like this:
+```
+ERROR in src/app/app.component.spec.ts(9,27): error TS2307: Cannot find module '@ngrx/store/testing'.
+```
+
+The lib @ngrx/store/testing was added after version 7.  Installed a few libraries that were missing.
+```
+npm i jasmine-marbles --save-dev
+npm install @ngrx/store --save
+```
+
+Goes to show you need to read more of that output when debugging tests.  But this actually didn't help.  We have this in the package now:
+```
+"@ngrx/core": "^1.2.0",
+"@ngrx/effects": "^6.1.0",
+"@ngrx/router-store": "^6.1.0",
+"@ngrx/store": "^6.1.2",
+"@ngrx/store-devtools": "^6.1.0",
+```
+
+Despite what the output says, we have store installed, but still get the error.
+Trying to update to 7.4.  The current version has just been released:
+18 hours ago 8.2.0.  On 5 June it was first introduced with 8.0.0-rc.1.
+
+Had a problem trying to upgrade those so just unistalled and re-installed, now we have this:
+```
+"@ngrx/core": "^1.2.0",
+"@ngrx/effects": "^8.2.0",
+"@ngrx/router": "^1.0.0-beta.2",
+"@ngrx/router-store": "^8.2.0",
+"@ngrx/store": "^8.2.0",
+"@ngrx/store-devtools": "^8.2.0",
+```
+
+Have to put fixing this problem on the to-do list:
+```
+found 669 vulnerabilities (3 moderate, 666 high)
+```
+
+After all this the situation has improved a (small) bit:
+```
+Executed 8 of 8 (5 FAILED) ERROR (0.522 secs / 0.478 secs)
+```
+
+Better than six errors!  Anyhow, the last one on the list is not actually a failure, it's an error:
+```
+Chrome 75.0.3770 (Mac OS X 10.14.2) ERROR
+  An error was thrown in afterAll
+  ReferenceError: any is not defined
+      at <Jasmine>
+      at Suite.<anonymous> (http://localhost:9876/_karma_webpack_/webpack:/src/app/components/entities/entities.component.spec.ts:11:36)
+```
+
+Oh, that was easy.  The store needs to be configured a little like this:
+```
+let store: MockStore<{ entities: any, selectedEntity: any }>;
+const initialState = { entities: null, selectedEntity: null };
+```
+
+Then we get this error (down to 4 now):
+```
+Chrome 75.0.3770 (Mac OS X 10.14.2) ERROR
+  An error was thrown in afterAll
+  Error: Cannot call Promise.then from within a sync test.
+```
+
+There is actually no indication of *where* the error happens.
+
+We could look at this error first:
+```
+AppComponent should render title in a h1 tag FAILED
+	Failed: Cannot read property 'entities' of undefined
+```
+
+The current issue is the reducers in configuring the test bed.  If we do this:
+```
+TestBed.configureTestingModule({
+	declarations: [
+		AppComponent
+	], imports: [
+			RouterTestingModule,
+			StoreModule.forRoot({
+			...appReducers.entityReducers
+		}) ]
+```
+
+We will get this error:
+```
+ERROR in src/app/app.component.spec.ts(25,31): error TS2345:
+Argument of type
+'{ appReducers: ActionReducerMap<IAppState, any>; }'
+is not assignable to parameter of type
+'ActionReducerMap<{ appReducers: {}; }, Action> | InjectionToken<ActionReducerMap<{ appReducers: {}; }, Action>>'.
+  Type '{ appReducers: ActionReducerMap<IAppState, any>; }' is not assignable to type 'InjectionToken<ActionReducerMap<{ appReducers: {}; }, Action>>'.
+    Property '_desc' is missing in type '{ appReducers: ActionReducerMap<IAppState, any>; }'.
+```		
+
+Using this:
+```
+...appReducers.entityReducers
+```
+
+which is more like what the sample test showed, results in this error:
+```
+ERROR in src/app/app.component.spec.ts(26,26): error TS2339: Property 'entityReducers' does not exist on type 'typeof import("/Users/tim/repos/tiwanaku/src/app/store/reducers/app.reducers")'.
+```
+
+
 
 ## Upgrading to Angular 7.2 and the entity detail
 

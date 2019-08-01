@@ -8,7 +8,7 @@ describe('EntitiesComponent', () => {
   let component: EntitiesComponent;
   let fixture: ComponentFixture<EntitiesComponent>;
   let store: MockStore<{ entities: any, selectedEntity: any }>;
-  const initialState = { entities: any, selectedEntity: any };
+  const initialState = { entities: null, selectedEntity: null };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
