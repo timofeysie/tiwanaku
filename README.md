@@ -43,7 +43,7 @@ it('should render title in a h1 tag', async(() => {
   const compiled = fixture.debugElement.nativeElement;
   console.log('sdf',compiled.querySelector('span').textContent);
   expect(compiled.querySelector('span').textContent).toContain('');
-}));
+}))
 ```
 
 The span on the first page looks like this:
@@ -207,6 +207,69 @@ Using this:
 which is more like what the sample test showed, results in this error:
 ```
 ERROR in src/app/app.component.spec.ts(26,26): error TS2339: Property 'entityReducers' does not exist on type 'typeof import("/Users/tim/repos/tiwanaku/src/app/store/reducers/app.reducers")'.
+```
+
+The reducers look like this:
+```
+export const appReducers: ActionReducerMap<IAppState, any> = {
+  router: routerReducer,
+  entities: entityReducers,
+  config: configReducers,
+  error: errorReducers
+};
+```
+
+
+
+```
+ERROR in src/app/app.component.spec.ts(25,31): error TS2345: Argument of type '{ entityReducers: typeof import("/Users/tim/repos/tiwanaku/src/app/store/reducers/entity.reducers"); appReducers: ActionReducerMap<IAppState, any>; }' is not assignable to parameter of type 'ActionReducerMap<{ entityReducers: {}; appReducers: {}; }, Action> | InjectionToken<ActionReducerMap<{ entityReducers: {}; appReducers: {}; }, Action>>'.
+  Type '{ entityReducers: typeof import("/Users/tim/repos/tiwanaku/src/app/store/reducers/entity.reducers"); appReducers: ActionReducerMap<IAppState, any>; }' is not assignable to type 'InjectionToken<ActionReducerMap<{ entityReducers: {}; appReducers: {}; }, Action>>'.
+    Property '_desc' is missing in type '{ entityReducers: typeof import("/Users/tim/repos/tiwanaku/src/app/store/reducers/entity.reducers"); appReducers: ActionReducerMap<IAppState, any>; }'.
+```
+
+Or
+```
+ERROR in src/app/app.component.spec.ts(25,31): error TS2345: Argument of type '{ appReducers: ActionReducerMap<IAppState, any>; }' is not assignable to parameter of type 'ActionReducerMap<{ appReducers: {}; }, Action> | InjectionToken<ActionReducerMap<{ appReducers: {}; }, Action>>'.
+  Type '{ appReducers: ActionReducerMap<IAppState, any>; }' is not assignable to type 'InjectionToken<ActionReducerMap<{ appReducers: {}; }, Action>>'.
+    Property '_desc' is missing in type '{ appReducers: ActionReducerMap<IAppState, any>; }'.
+```
+
+Not sure what the sample was that the redux unit test setup came from.  Looking at Santiago's GitHut, he has a [workshop project](https://github.com/SantiagoGdaR/ngrx-workshop) with tests for the store.  That's a start.  The last step: *5 - example of unit testing our store*.
+
+In the tests branch, we have a [reducer spec](https://github.com/SantiagoGdaR/ngrx-workshop/blob/feature/ngrx-test/src/app/store/reducers/github.reducer.spec.ts).
+
+There are eleven tests there, and they all pass.  The app itself is a bit different from the Redux intro, it is a basic user page and a list of GitHub users.  Not bad really, as a starting point.  However, the idea was to have a great tutorial available for new users to read and get up to speed on the app code features so they can then join in the open source project with less steep learning curve.
+
+The plan now is to roll back the Redux tests and implement these working tests one at a time and see how that goes.  Failing that, use the working workshop app to replace the current one and add the entities to that instead.
+
+After step one, things are worse:
+```
+TOTAL: 9 FAILED, 1 SUCCESS
+```
+
+Some of the fun:
+```
+Movies I haven't seen in the Marvel universe stories besides the Antman ones are:
+1. Thor: The Dark World (2013)
+2. Thor: Ragnarok (2017)
+```
+
+The last fail then in the list after rolling back the app.component and
+```
+Chrome 75.0.3770 (Mac OS X 10.14.2) EntitiesComponent should create FAILED
+	1. If 'app-entities' is an Angular component and it has 'entities' input, then verify that it is part of this module.
+```
+
+```
+EntityService should be created FAILED
+	Error: StaticInjectorError(DynamicTestModule)[Store -> ActionsSubject]:
+		StaticInjectorError(Platform: core)[Store -> ActionsSubject]:
+		  NullInjectorError: No provider for ActionsSubject!
+```
+
+```
+Chrome 75.0.3770 (Mac OS X 10.14.2) EntityComponent should create FAILED
+	1. If 'app-entity-details' is an Angular component and it has 'entity' input, then verify that it is part of this module.
 ```
 
 

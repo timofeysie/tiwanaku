@@ -1,37 +1,28 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import {RouterTestingModule} from '@angular/router/testing';
-import { StoreModule } from '@ngrx/store';
-import * as appReducers from './store/reducers/app.reducers';
-import * as entityReducers from './store/reducers/entity.reducers';
-import * as EntityActions from './store/actions/entity.actions';
-import { Store } from '@ngrx/store';
-import { MockStore } from '@ngrx/store/testing';
-import { cold } from 'jasmine-marbles';
+import { RouterModule } from '@angular/router';
 
 describe('AppComponent', () => {
-  let component: AppComponent;
-  //let fixture: ComponentFixture<AppComponent>
-  let store: MockStore<{ entities: any, selectedEntity: any }>;
-  const initialState = { entities: null, selectedEntity: null };
-  //let store: Store<fromFeature.State>
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [RouterModule.forRoot([])],
       declarations: [
         AppComponent
-      ], imports: [
-          RouterTestingModule,
-          StoreModule.forRoot({
-          ...appReducers.entityReducers
-        }) ]
+      ],
     }).compileComponents();
   }));
-  it('should create the app', async(() => {
+
+  it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
-  }));
+  });
+
+  it(`should have as title 'ngrx-workshop'`, () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance;
+    expect(app.title).toEqual('ngrx-workshop');
+  });
   it(`should have as title 'app'`, async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
