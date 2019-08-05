@@ -272,6 +272,72 @@ Chrome 75.0.3770 (Mac OS X 10.14.2) EntityComponent should create FAILED
 	1. If 'app-entity-details' is an Angular component and it has 'entity' input, then verify that it is part of this module.
 ```
 
+First off, there are no extra tests in the app.component.spec.  So we don't even need to worry about that.
+GithubUserListComponent and the other home component both have no special redux tests.
+
+GithubUsersComponent however does.  That class does a simple fetch:
+```
+users$ = this.store.pipe(select(selectGithubUsers));
+constructor(private store: Store<AppState>) { }
+ngOnInit() {
+	this.store.dispatch(new GetUsers());
+}
+```
+
+Only three lines of anything interesting in the class, but the unit test spec if quite a bit long:
+```Javascript
+let component: GithubUsersComponent;
+let fixture: ComponentFixture<GithubUsersComponent>;
+let store: Store<AppState>;
+
+beforeEach(async(() => {
+	TestBed.configureTestingModule({
+		imports: [
+			StoreModule.forRoot(reducers)
+		],
+		declarations: [ GithubUsersComponent, GithubUserListComponent ]
+	})
+	.compileComponents();
+}));
+
+beforeEach(() => {
+	fixture = TestBed.createComponent(GithubUsersComponent);
+	component = fixture.componentInstance;
+	store = TestBed.get(Store);
+	spyOn(store, 'dispatch').and.callThrough();
+	fixture.detectChanges();
+	it('should dispatch an action to load github users when created', () => {
+	const action = new GetUsers();
+	expect(store.dispatch).toHaveBeenCalledWith(action);
+});
+
+it('should have a list of github users after the data is loaded', () => {
+	const githubUsers: GithubUser[] = [
+		{ login: 'login1', avatar_url: ''},
+		{ login: 'login2', avatar_url: ''},
+		{ login: 'login3', avatar_url: ''}
+	];
+	const action = new GetUsersSuccess(githubUsers);
+
+	store.dispatch(action);
+
+	component.users$.subscribe(data => {
+		expect(data.length).toBe(githubUsers.length);
+	});
+});
+```
+
+There are a few errors before really getting to this.  It would be nice if there were first of all no errors, and then adding the above setup and tests step by step to get it right.
+
+So clearing out the errors, there is this one:
+```
+AppComponent > should create the app
+...
+    NullInjectorError: No provider for Store!
+```
+
+However, in the code above, there is no store in the provider of the app component.  Normally we would just chuck the store into the provider array in the test bed setup.
+
 
 
 ## Upgrading to Angular 7.2 and the entity detail

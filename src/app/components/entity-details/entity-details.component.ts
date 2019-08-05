@@ -11,7 +11,5 @@ export class EntityDetailsComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-    console.log('entity!',this.entity.cognitive_biasLabel);
-  }
+  ngOnInit() { }
 }
