@@ -345,6 +345,21 @@ AppComponent > should render title in a h1 tag
     NullInjectorError: No provider for StateObservable!
 ```
 
+Despite the name, we added ```StoreModule.forRoot({})``` in the imports array and that test passed.
+
+The next error for that component then is this:
+```
+AppComponent > should render title in a h1 tag
+Failed: Cannot read property 'entities' of undefined
+```
+
+At this point git was hanging when pushing updates to GitHub.  Tried the usual answer for this:
+```
+git config --global core.askpass "git-gui--askpass"
+```
+
+But that didn't help.
+
 
 ## Upgrading to Angular 7.2 and the entity detail
 

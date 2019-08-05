@@ -6,7 +6,7 @@ import { Store, StoreModule } from '@ngrx/store';
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterModule.forRoot([])],
+      imports: [RouterModule.forRoot([]), StoreModule.forRoot({})],
       declarations: [
         AppComponent
       ],
