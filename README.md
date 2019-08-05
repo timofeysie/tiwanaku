@@ -338,6 +338,12 @@ AppComponent > should create the app
 
 However, in the code above, there is no store in the provider of the app component.  Normally we would just chuck the store into the provider array in the test bed setup.
 
+Doing that then causes this error:
+```
+AppComponent > should render title in a h1 tag
+...
+    NullInjectorError: No provider for StateObservable!
+```
 
 
 ## Upgrading to Angular 7.2 and the entity detail
