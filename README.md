@@ -7,6 +7,7 @@ It provides an example of managing application state using Angular with Redux ba
 
 ## Table of contents
 
+1. [Testing Redux in Angular](#testing-Redux-in-Angular)
 1. [Upgrading to Angular 7.2 and the entity detail](#upgrading-to-Angular-7.2-and-the-entity-detail)
 1. [Using store values](#using-store-values)
 1. [Options for state management in Angular](#options-for-state-management-in-Angular)
@@ -36,7 +37,7 @@ Chrome 75.0.3770 (Mac OS X 10.14.2) AppComponent should render title in a h1 tag
 ```
 
 Love it.  In this case, Google is not going to help.  I will bet it's this one:
-```
+```Javascript
 it('should render title in a h1 tag', async(() => {
   const fixture = TestBed.createComponent(AppComponent);
   fixture.detectChanges();
@@ -47,14 +48,14 @@ it('should render title in a h1 tag', async(() => {
 ```
 
 The span on the first page looks like this:
-```
+```html
 <span>{{ (entities$ | async)?.length }}</span>
 ```
 
 Since that variable is using the async pipe, what's the bet that the test is not async, but should?
 
 This is what we are doing in the class:
-```
+```Javascript
 entities$ = this._store.pipe(select(selectEntityList));
 ```
 
@@ -64,12 +65,12 @@ Failed: Cannot read property 'entities' of undefined
 ```
 
 In the official docs they show this:
-```
+```Javascript
 items$ = this.store.pipe(select(fromFeature.selectFeatureItems));
 ```
 
 Very similar.  In the example spec:
-```
+```Javascript
 import * as fromRoot from '../reducers';
 import * as fromFeature from '../feature/reducers';
 import * as DataActions from '../actions/data';
@@ -82,7 +83,7 @@ let store: Store<fromFeature.State>
 ```
 
 Since we have different names, what is *fromRoot*
-```
+```Javascript
 import * as appReducers from './store/reducers/app.reducers';
 import * as entityReducers from './store/reducers/entity.reducers';
 import * as EntityActions from './store/actions/entity.actions';
@@ -114,7 +115,7 @@ npm install @ngrx/store --save
 ```
 
 Goes to show you need to read more of that output when debugging tests.  But this actually didn't help.  We have this in the package now:
-```
+```json
 "@ngrx/core": "^1.2.0",
 "@ngrx/effects": "^6.1.0",
 "@ngrx/router-store": "^6.1.0",
@@ -127,7 +128,7 @@ Trying to update to 7.4.  The current version has just been released:
 18 hours ago 8.2.0.  On 5 June it was first introduced with 8.0.0-rc.1.
 
 Had a problem trying to upgrade those so just unistalled and re-installed, now we have this:
-```
+```json
 "@ngrx/core": "^1.2.0",
 "@ngrx/effects": "^8.2.0",
 "@ngrx/router": "^1.0.0-beta.2",
@@ -140,6 +141,8 @@ Have to put fixing this problem on the to-do list:
 ```
 found 669 vulnerabilities (3 moderate, 666 high)
 ```
+
+### 5 FAILED
 
 After all this the situation has improved a (small) bit:
 ```
@@ -156,7 +159,7 @@ Chrome 75.0.3770 (Mac OS X 10.14.2) ERROR
 ```
 
 Oh, that was easy.  The store needs to be configured a little like this:
-```
+```Javascript
 let store: MockStore<{ entities: any, selectedEntity: any }>;
 const initialState = { entities: null, selectedEntity: null };
 ```
@@ -177,7 +180,7 @@ AppComponent should render title in a h1 tag FAILED
 ```
 
 The current issue is the reducers in configuring the test bed.  If we do this:
-```
+```Javascript
 TestBed.configureTestingModule({
 	declarations: [
 		AppComponent
@@ -200,7 +203,7 @@ is not assignable to parameter of type
 ```		
 
 Using this:
-```
+```Javascript
 ...appReducers.entityReducers
 ```
 
@@ -210,7 +213,7 @@ ERROR in src/app/app.component.spec.ts(26,26): error TS2339: Property 'entityRed
 ```
 
 The reducers look like this:
-```
+```Javascript
 export const appReducers: ActionReducerMap<IAppState, any> = {
   router: routerReducer,
   entities: entityReducers,
@@ -219,8 +222,7 @@ export const appReducers: ActionReducerMap<IAppState, any> = {
 };
 ```
 
-
-
+The error:
 ```
 ERROR in src/app/app.component.spec.ts(25,31): error TS2345: Argument of type '{ entityReducers: typeof import("/Users/tim/repos/tiwanaku/src/app/store/reducers/entity.reducers"); appReducers: ActionReducerMap<IAppState, any>; }' is not assignable to parameter of type 'ActionReducerMap<{ entityReducers: {}; appReducers: {}; }, Action> | InjectionToken<ActionReducerMap<{ entityReducers: {}; appReducers: {}; }, Action>>'.
   Type '{ entityReducers: typeof import("/Users/tim/repos/tiwanaku/src/app/store/reducers/entity.reducers"); appReducers: ActionReducerMap<IAppState, any>; }' is not assignable to type 'InjectionToken<ActionReducerMap<{ entityReducers: {}; appReducers: {}; }, Action>>'.
@@ -234,6 +236,8 @@ ERROR in src/app/app.component.spec.ts(25,31): error TS2345: Argument of type '{
     Property '_desc' is missing in type '{ appReducers: ActionReducerMap<IAppState, any>; }'.
 ```
 
+### NgRx Workshop Tests
+
 Not sure what the sample was that the redux unit test setup came from.  Looking at Santiago's GitHut, he has a [workshop project](https://github.com/SantiagoGdaR/ngrx-workshop) with tests for the store.  That's a start.  The last step: *5 - example of unit testing our store*.
 
 In the tests branch, we have a [reducer spec](https://github.com/SantiagoGdaR/ngrx-workshop/blob/feature/ngrx-test/src/app/store/reducers/github.reducer.spec.ts).
@@ -241,6 +245,9 @@ In the tests branch, we have a [reducer spec](https://github.com/SantiagoGdaR/ng
 There are eleven tests there, and they all pass.  The app itself is a bit different from the Redux intro, it is a basic user page and a list of GitHub users.  Not bad really, as a starting point.  However, the idea was to have a great tutorial available for new users to read and get up to speed on the app code features so they can then join in the open source project with less steep learning curve.
 
 The plan now is to roll back the Redux tests and implement these working tests one at a time and see how that goes.  Failing that, use the working workshop app to replace the current one and add the entities to that instead.
+
+
+###  FAILED, 1 SUCCESS
 
 After step one, things are worse:
 ```
@@ -276,7 +283,7 @@ First off, there are no extra tests in the app.component.spec.  So we don't even
 GithubUserListComponent and the other home component both have no special redux tests.
 
 GithubUsersComponent however does.  That class does a simple fetch:
-```
+```Javascript
 users$ = this.store.pipe(select(selectGithubUsers));
 constructor(private store: Store<AppState>) { }
 ngOnInit() {
@@ -284,7 +291,7 @@ ngOnInit() {
 }
 ```
 
-Only three lines of anything interesting in the class, but the unit test spec if quite a bit long:
+Only three lines of anything interesting in the class, but the unit test spec if quite a bit longer:
 ```Javascript
 let component: GithubUsersComponent;
 let fixture: ComponentFixture<GithubUsersComponent>;
@@ -347,6 +354,14 @@ AppComponent > should render title in a h1 tag
 
 Despite the name, we added ```StoreModule.forRoot({})``` in the imports array and that test passed.
 
+
+### 5 FAILED, 4 SUCCESS
+
+Stutus update:
+```
+TOTAL: 5 FAILED, 4 SUCCESS
+```
+
 The next error for that component then is this:
 ```
 AppComponent > should render title in a h1 tag
@@ -358,7 +373,7 @@ At this point git was hanging when pushing updates to GitHub.  Tried the usual a
 git config --global core.askpass "git-gui--askpass"
 ```
 
-But that didn't help.
+But that didn't help.  Restarting the terminal and doing a push after that worked when the UI popped up for username and password, and the push worked.
 
 
 ## Upgrading to Angular 7.2 and the entity detail
