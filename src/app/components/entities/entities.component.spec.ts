@@ -6,7 +6,7 @@ describe('EntitiesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ EntitiesComponent ]
+      declarations: [ EntitiesComponent ]
     })
     .compileComponents();
   }));

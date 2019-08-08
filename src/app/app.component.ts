@@ -4,6 +4,7 @@ import { IAppState } from './store/state/app.state';
 import { GetConfig } from './store/actions/config.actions';
 import { selectConfig } from './store/selectors/config.selector';
 import { selectEntityList } from './store/selectors/entity.selector';
+import { EntitiesComponent } from './components/entities/entities.component';
 import { Observable } from 'rxjs';
 
 @Component({

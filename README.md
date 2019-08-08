@@ -280,6 +280,7 @@ Chrome 75.0.3770 (Mac OS X 10.14.2) EntityComponent should create FAILED
 ```
 
 First off, there are no extra tests in the app.component.spec.  So we don't even need to worry about that.
+
 GithubUserListComponent and the other home component both have no special redux tests.
 
 GithubUsersComponent however does.  That class does a simple fetch:
@@ -376,6 +377,43 @@ git config --global core.askpass "git-gui--askpass"
 But that didn't help.  Restarting the terminal and doing a push after that worked when the UI popped up for username and password, and the push worked.
 
 
+### 5 failures
+
+#### AppComponent > should render title in a h1 tag
+#### Failed: Cannot read property 'entities' of undefined
+
+Importing and setting up the test bed like in the workshop in the app component gets rid of one error.  Actually no, that's what the console says, but the Chrome debug console shows this:
+
+Executed 6 of 9 (4 FAILED) ERROR or 9 specs, 6 failures
+
+Imported the store and StoreModule in the entity service the same as part of the work done on the app.component.spec.  The test watch seemed to have stalled, so ran them again.
+
+#### (6 FAILED) ERROR
+
+```
+EntityService > should be created
+Error: Invalid provider for the NgModule 'DynamicTestModule' - only instances of Provider and Type are allowed, got: [EntityService, Store, [object Object], ?[object Object]?, ...]
+```
+
+The StoreModule.forRoot({}) was in both imports and providers, but only needs to be in imports.  However, the number of failures is the same.  The last one on the list now has changed to this:
+```
+AppComponent > should have as title 'app'
+Failed: Cannot read property 'entities' of undefined
+error properties: Object({ longStack: 'TypeError: Cannot read property 'entities' of undefined
+```
+
+Import the entities.component into that class and then:
+```
+EntityService > should be created
+TypeError: source.subscribe is not a function
+```
+
+That's the kind of error you get when a mock service doesn't return an observable as explained [here](https://stackoverflow.com/questions/51936445/typeerror-x-subscribe-is-not-a-function).
+
+Do we mock the entity or the entity service?
+
+
+#
 ## Upgrading to Angular 7.2 and the entity detail
 
 While trying to fix the entity detail page, which always get's the first element on the list from the state, we decided to upgrade to Angular 7.2 to take advantage of the router improvements.
