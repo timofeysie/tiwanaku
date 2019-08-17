@@ -1,4 +1,4 @@
-<nav class="navbar d-flex">
+<nav class="navbar d-flex toolbar-background">
   <a class="navbar-brand"
     routerLink="/">
     <span>{{ (entities$ | async)?.length }}</span>
@@ -13,7 +13,7 @@
     </ul>
   </div>
 </nav>
-<div class="container app-container">
+<div class="app-container content">
   <router-outlet></router-outlet>
 </div>
 <div *ngIf="error$ | async as error" class="error">{{error.message}}</div>

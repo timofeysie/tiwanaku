@@ -4,6 +4,12 @@
 .what {
   color: var(--ion-color-medium-tint);
 }
+.primary { background-color: var(--primary) }
+.secondary { background-color: var(--secondary) }
+.tertiary { background-color: var(--tertiary) }
+.medium { background-color: var(--medium) }
+.dark { background-color: var(--dark) }
+.autumn { background-color: var(--autumn) }
 
 @keyframes spin {
     to {
