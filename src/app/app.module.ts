@@ -18,6 +18,8 @@ import { EntityComponent } from './containers/entity/entity.component';
 import { EntityDetailsComponent } from './components/entity-details/entity-details.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorInterceptor } from './services/error.interceptor';
+import { ThemeService } from './services/theme.service';
+import { OptionsComponent } from './containers/options/options.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,8 @@ import { ErrorInterceptor } from './services/error.interceptor';
     EntitiesContainerComponent,
     EntitiesComponent,
     EntityComponent,
-    EntityDetailsComponent
+    EntityDetailsComponent,
+    OptionsComponent
   ],
   imports: [
     BrowserModule,
@@ -36,9 +39,11 @@ import { ErrorInterceptor } from './services/error.interceptor';
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     AppRoutingModule
   ],
-  providers: [EntityService,
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
-	],
+  providers: [
+    EntityService,
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    ThemeService
+    ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

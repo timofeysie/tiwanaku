@@ -23,6 +23,108 @@ It provides an example of managing application state using Angular with Redux ba
 
 
 
+## Creating a theme service
+
+Some call it co-branding, some call it bespoke.  Some just like dark mode.  When it comes to Angular which uses scss compiled css, the vanilla Javascript option is not available.  This old appraoch is well described in the famous W3 [Four Styles, One Page](http://www.w3schools.com/css/demo_default.htm) demo.
+
+This section is about an Angular way to do a similar thing.  The basic approach could be as simple as this:
+```
+ [ngClass]="setTheme() 
+``` 
+
+Us this on the top of components as described in the [answer to this Stack Overflow question]
+(https://stackoverflow.com/questions/53077314/angular-bootstrap-4-dark-light-mode-switch)
+
+
+Here is [a Stack Blitz example of the first answer](https://stackblitz.com/edit/angular-tzxvzf).
+
+
+The crux is:
+```html
+<div [ngClass]="setTheme()">
+```
+```Javascript
+  constructor(){
+    this.themeVar = 'nightTime' /  'dayTime';
+    this.emp_image = 'something';
+  } 
+  setTheme(){
+      return this.themeVar;
+  }
+```
+```css
+.dayTime{
+  background: pink;
+  hello{ color:red; }
+  p {
+    color:#000;
+    font-family: Lato;
+  }
+} 
+.nightTime{
+  background: skyblue;
+  hello{ color:blue; }
+  p {
+    color:brown;
+    font-family: Lato;
+  }
+}
+```
+
+### Themes with CSS variables
+
+Taking things further when using something like Bootstrap or Ionic where a decent theme system with tinting and all that is already setup.  So you do you hook into this to create instant themes by just changing the existing base theme of six colors.
+
+It is common to set global vars on the :root because it ensures that they will be picked up by all other elements in the DOM.
+```
+:root {
+  --primary-color: orange;
+}
+```
+
+
+Use and provide a fallback value, just in case the variable is undefined.
+```
+button {
+  background: var(--primary-color, green);
+}
+```
+
+
+### The theme service
+
+We should create a theme service which will handle that for each component.
+
+Here is a good discussion regarding what the functionality of the theme service  could look like:
+https://angularfirebase.com/lessons/css-variables-in-ionic-4/
+
+Even though it's for Ionic (which is based on Angular), I think it's a good pattern to follow.
+
+For the next step we will be making a theme creater page.  Here is a good demo which uses sliders and variables for things other than colors:
+https://googlechrome.github.io/samples/css-custom-properties/
+
+
+First, create the service & install Color:
+```
+ng g service services/theme
+npm i color
+npm install @types/color
+```
+
+
+What's Color? A JavaScript library for immutable color conversion and manipulation with support for CSS color strings.
+
+Or more exactly, a utility lib to calculate the tint, shade, and contrast for the base colors.
+
+https://angularfirebase.com/lessons/css-variables-in-ionic-4/
+
+We need an options page in this project.  Use the CLI:
+```
+ng g page containers/options
+```
+
+
+
 ## Testing Redux in Angular
 
 The problem: TOTAL: 6 FAILED, 3 SUCCESS
