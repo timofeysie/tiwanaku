@@ -8,18 +8,19 @@ import * as Color from 'color';
 export class ThemeService {
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    private storage: Storage
+    //private storage: Storage
   ) {
-    storage.get('theme').then(cssText => {
-      this.setGlobalCSS(cssText);
-    });
+    // storage.get('theme').then(cssText => {
+    //   this.setGlobalCSS(cssText);
+    // });
   }
 
   // Override all global variables with a new theme
   setTheme(theme) {
     const cssText = CSSTextGenerator(theme);
     this.setGlobalCSS(cssText);
-    this.storage.set('theme', cssText);
+    console.log('cssText',cssText)
+    //this.storage.set('theme', cssText);
   }
 
   // Define a single CSS variable
@@ -32,7 +33,8 @@ export class ThemeService {
   }
 
   get storedTheme() {
-    return this.storage.get('theme');
+    // return this.storage.get('theme');
+    return null;
   }
 }
 

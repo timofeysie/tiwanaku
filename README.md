@@ -120,7 +120,7 @@ https://angularfirebase.com/lessons/css-variables-in-ionic-4/
 
 We need an options page in this project.  Use the CLI:
 ```
-ng g page containers/options
+ng g component containers/options
 ```
 
 
