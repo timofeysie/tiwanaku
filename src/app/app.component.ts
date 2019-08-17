@@ -49,6 +49,7 @@ export class AppComponent implements OnInit {
       private _store: Store<IAppState>,
       private theme: ThemeService) {
       this.error$ = _store.pipe(select('error'));
+      this.theme.setTheme('night');
   }
 
   ngOnInit() {

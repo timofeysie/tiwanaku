@@ -14,7 +14,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let entity of entities">
-      <td>
+      <td class="item">
         <a routerLink="/entity/{{entity.cognitive_bias.substring(entity.cognitive_bias.lastIndexOf('/'),entity.cognitive_bias.length)}}" [state]="{ data: entity }">{{ entity.cognitive_biasLabel }}</a>
       </td>
       <td>{{ entity.cognitive_biasDescription }}

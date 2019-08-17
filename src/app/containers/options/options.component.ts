@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ThemeService } from '../../services/theme.service';
 
-
 const themes = {
     autumn: {
       primary: '#F78154',
@@ -44,9 +43,8 @@ export class OptionsComponent implements OnInit {
     this.theme.setTheme(themes[name]);
   }
 
-
   changeSpeed(val) {
     this.theme.setVariable('--speed', `${val}ms`);
   }
-  
+
 }
