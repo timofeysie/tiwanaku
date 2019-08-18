@@ -1,3 +1,30 @@
+.swatch-container {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(6, 50px);
+}
+.swatch {
+    border-radius: 5px;
+    border-radius: 5px;
+    padding: 10px;
+}
+.swatch_1 { background-color: var(--ion-color-primary); }
+.swatch_2 { background-color: var(--ion-color-primary-rgb); }
+.swatch_3 { background-color: var(--primary-contrast); }
+.swatch_3 { background-color: var(--primary-contrast-rbg); }
+.swatch_4 { background-color: var(--primary-shade); }
+.swatch_5 { background-color: var(--primary-tint); }
+.swatch_6 { background-color: var(--primary); }
+
+.color-base { background-color: var(--ion-color-base); }
+.color-contrast { background-color: var(--ion-color-contrast); }
+.background-color { background-color: var(--ion-background-color); }
+.text-color { color: var(--ion-text-color); }
+.toolbar-background-color { background-color: var(--ion-toolbar-background-color); }
+.toolbar-text-color { color: var(--ion-toolbar-text-color); }
+.item-background-color { background-color: var(--ion-item-background-color); }
+.item-text-color { color: var(--ion-item-text-color); }
+
 .container {
     background-color: var(--ion-color-light-tint);
 }

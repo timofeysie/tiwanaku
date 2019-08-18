@@ -7,6 +7,7 @@ It provides an example of managing application state using Angular with Redux ba
 
 ## Table of contents
 
+1. [Creating a theme service](#creating-a-theme-service)
 1. [Testing Redux in Angular](#testing-Redux-in-Angular)
 1. [Upgrading to Angular 7.2 and the entity detail](#upgrading-to-Angular-7.2-and-the-entity-detail)
 1. [Using store values](#using-store-values)
