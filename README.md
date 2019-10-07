@@ -23,6 +23,34 @@ It provides an example of managing application state using Angular with Redux ba
 5. [Redux Layout Tutorial App readme](#redux-Layout-Tutorial-App-readme)
 
 
+## Workflow
+
+This app uses the usual Angular CLI workflow.
+
+```
+ng serve // http://localhost:4200/
+ng generate component component-name
+ng build // artifacts will be stored in the `dist/` dir
+ng test
+ng e2e
+```
+
+Currently using Angular 7.2.14 and ngrx 8.2.0.
+
+
+## Forms with NgRx
+
+Using [this article](https://medium.com/@gasiorowski.piotr/writing-redux-aware-angular-forms-with-ngrx-part-1-cf0981ffc10d) as a starting point for the form.  
+
+
+
+There are a few differences in our current setup such as this:
+```
+IApplicationState -> IAppState
+```
+
+
+
 
 ## Creating a theme service
 
@@ -30,8 +58,8 @@ Some call it co-branding, some call it bespoke.  Some just like dark mode.  When
 
 This section is about an Angular way to do a similar thing.  The basic approach could be as simple as this:
 ```
- [ngClass]="setTheme() 
-``` 
+ [ngClass]="setTheme()
+```
 
 Us this on the top of components as described in the [answer to this Stack Overflow question]
 (https://stackoverflow.com/questions/53077314/angular-bootstrap-4-dark-light-mode-switch)
@@ -48,7 +76,7 @@ The crux is:
   constructor(){
     this.themeVar = 'nightTime' /  'dayTime';
     this.emp_image = 'something';
-  } 
+  }
   setTheme(){
       return this.themeVar;
   }
@@ -61,7 +89,7 @@ The crux is:
     color:#000;
     font-family: Lato;
   }
-} 
+}
 .nightTime{
   background: skyblue;
   hello{ color:blue; }
@@ -71,6 +99,7 @@ The crux is:
   }
 }
 ```
+
 
 ### Themes with CSS variables
 
