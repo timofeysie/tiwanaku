@@ -19,7 +19,6 @@ export class ThemeService {
   setTheme(theme) {
     const cssText = CSSTextGenerator(theme);
     this.setGlobalCSS(cssText);
-    console.log('cssText',cssText)
     //this.storage.set('theme', cssText);
   }
 

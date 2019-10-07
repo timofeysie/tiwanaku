@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ThemeService } from '../../services/theme.service';
+import { IAppState, IFormState } from '../../store/state/app.state';
+import { Store, select, Action } from '@ngrx/store';
 
 const themes = {
     autumn: {
@@ -34,10 +36,23 @@ const themes = {
   styleUrls: ['./options.component.css']
 })
 export class OptionsComponent implements OnInit {
-
-  constructor(private theme: ThemeService) { }
+  public formState: IFormState;
+  constructor(
+    private theme: ThemeService,
+    private store: Store<IAppState>) {
+      // Subscribe to the newest version of the formState:
+      this.store.pipe(select(e => e.form)).subscribe(fs => {
+        this.formState = fs;
+      });
+  }
 
   ngOnInit() { }
+
+  onFormActions($event: Action[]) {
+    // whenever form (child) component emits event with actions as payload, dispatch them
+    const actions = $event;
+    actions.forEach(this.store.dispatch.bind(this.store));
+  }
 
   changeTheme(name) {
     this.theme.setTheme(themes[name]);

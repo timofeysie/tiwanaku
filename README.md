@@ -68,8 +68,52 @@ Thanks for the breaking changes guys!
 There are a also a few differences in our current setup such as this:
 ```
 IApplicationState -> IAppState
+app-state -> app.state
 ```
 
+Do we just add these to the app state?
+```
+export const FORM_NAME_CHANGED = 'FORM_NAME_CHANGED';
+export const FORM_SET_VALIDITY = 'FORM_SET_VALIDITY';
+```
+
+
+Getting this error among others:
+```
+Cannot read property 'config' of undefined
+    at config.selector.ts:10
+```
+
+maybe state.config is not compiling?  Neither of these files have been modified yet.  Only app.stat.ts has changes so far, just for the name field.
+
+There is a [completed project](https://github.com/GasiorowskiPiotr/redux-form-demo/blob/master/src/app/state/application-state.ts) repo, but is it wise to jump ahead like that?  The example has everything for a full address form.  We have different requirements.  So it would be better to get the framework in place for our three inputs for a SPARQL statement and then move on from there.
+
+The other errors are:
+```
+ERROR TypeError: Cannot read property 'entities' of undefined
+    at entity.selector.ts:10
+Cannot read property 'entities' of undefined
+    at entity.selector.ts:10
+    core.js:19866 ERROR TypeError:
+Cannot read property 'config' of undefined
+        at config.selector.ts:10
+Cannot read property 'config' of undefined
+        at config.selector.ts:10
+```
+
+
+The big problem is here?  
+
+config.selector.ts: line 10:
+```
+  (state: IConfigState) => state.config
+```
+
+Since we have added form to the app state, I guess that's why it is not compiling now.
+
+According to [this SO answer](https://stackoverflow.com/questions/42742967/ngrx-state-is-undefined), setting a default case condition is the answer.
+
+IFormState
 
 
 

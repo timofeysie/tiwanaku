@@ -16,4 +16,4 @@
     <div class="swatch swatch_6">6</div>
   </div>
   <hr>
-  <piotrek-form></piotrek-form>
+  <piotrek-form [form]="formState" (actionsEmitted)="onFormActions($event)"></piotrek-form>
