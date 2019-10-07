@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material';
 import { StoreModule } from '@ngrx/store';
 import { BrowserModule } from '@angular/platform-browser';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -20,6 +23,9 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorInterceptor } from './services/error.interceptor';
 import { ThemeService } from './services/theme.service';
 import { OptionsComponent } from './containers/options/options.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { reducers, metaReducers } from './reducers';
+import { FormComponent } from './form/form.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +34,8 @@ import { OptionsComponent } from './containers/options/options.component';
     EntitiesComponent,
     EntityComponent,
     EntityDetailsComponent,
-    OptionsComponent
+    OptionsComponent,
+    FormComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +44,19 @@ import { OptionsComponent } from './containers/options/options.component';
     EffectsModule.forRoot([EntityEffects, ConfigEffects]),
     StoreRouterConnectingModule.forRoot({ stateKey: 'router' }),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    StoreModule.forRoot(reducers, {
+      metaReducers,
+      runtimeChecks: {
+        strictStateImmutability: true,
+        strictActionImmutability: true
+      }
+    })
   ],
   providers: [
     EntityService,

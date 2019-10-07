@@ -42,9 +42,30 @@ Currently using Angular 7.2.14 and ngrx 8.2.0.
 
 Using [this article](https://medium.com/@gasiorowski.piotr/writing-redux-aware-angular-forms-with-ngrx-part-1-cf0981ffc10d) as a starting point for the form.  
 
+```
+ng add @angular/material @angular/cdk
+ng add @ngrx/store @ngrx/effects
+ng generate component form --prefix piotrek
+```
 
+A question: what is piotrek?  A diminutive of the male given name Piotr.
+Any more questions?  No at this time.
 
-There are a few differences in our current setup such as this:
+To avoid an *Can't bind to 'formGroup' since it isn't a known property of 'form'* error, we need to import { FormsModule, ReactiveFormsModule } from '@angular/forms' in the app module.
+
+To avoid an *'mat-form-field' is not a known element'* error, import, what?
+SO:
+*Since 2.0.0-beta.12, md prefix has been removed in favor of mat prefix. See this CHANGELOG for details: All "md" prefixes have been removed. See the deprecation notice in the beta.11 notes for more information. After the update, <md-form-field> should be changed to <mat-form-field>. Also, MdFormFieldModule and MdInputModule should be changed to MatFormFieldModule and MatInputModule*
+
+Had to change Md to Mat in places like this:
+```
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MdFormFieldModule } from '@angular/material';
+```
+
+Thanks for the breaking changes guys!
+
+There are a also a few differences in our current setup such as this:
 ```
 IApplicationState -> IAppState
 ```
