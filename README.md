@@ -37,6 +37,100 @@ ng e2e
 
 Currently using Angular 7.2.14 and ngrx 8.2.0.
 
+## Deploying the PWA
+
+[The official Ionic/Firebase]
+(https://ionicframework.com/docs/publishing/progressive-web-app) lays out the baisc steps, some of which are applicable to Ionic only, such as the build system.
+```
+npm install -g @angular/cli // if you haven't already
+ng add @angular/pwa
+```
+
+Got this error the first time.  Not sure what the solution was:
+```
+Installed packages for tooling via npm.
+Invalid rule result: Instance of class Promise.
+```
+
+This is the Ionic build.
+```
+ionic build --prod --service-worker
+```
+
+Angular would be something like this:
+```
+ng build --prod --service-worker
+```
+
+For this project however we get the following error:
+```
+chunk {3} styles.79cf99a676d1ea0664db.css (styles) 186 kB [initial] [rendered]
+ERROR in Error during template compile of 'AppModule'
+  Function expressions are not supported in decorators in 'ɵ0'
+    'ɵ0' references 'appReducers' at app/app.module.ts(44,25)
+      'appReducers' references 'entityReducers' at app/store/reducers/app.reducers.ts(11,13)
+        'entityReducers' contains the error at app/store/reducers/entity.reducers.ts(5,31)
+          Consider changing the function expression into an exported function.
+```
+[This answer](https://stackoverflow.com/questions/49943081/function-expressions-are-not-supported-in-decorators) indicates that need to export the function as decorators don't accept function calls into their properties.  In our case it's a reducer.  This doesn't seem to stop us from running the app.  Still, a prod build can uncover issues that must be addressed to move projects forward.
+
+
+
+In the theme builder Emperor Don Carlos app, the error was the following:
+```
+ERROR in Module build failed: Error: Missing binding C:\Users\timof\repos\temp\emperor-don-carlos\node_modules\node-sass\vendor\win32-x64-72\binding.node
+Node Sass could not find a binding for your current environment: Windows 64-bit with Node.js 12.x
+Found bindings for the following environments:
+  - Windows 64-bit with Node.js 8.x
+....
+at NormalModule.build (C:\Users\timof\repos\temp\emperor-don-carlos\node_modules\webpack\lib\NormalModule.js:365:15)[ERROR] An error occurred while running subprocess ng.
+```
+
+This was is the usual fix for the Ionic error:
+```
+$ node rebuild sass
+```
+
+create the project in Firebase.
+https://console.firebase.google.com/?pli=1
+
+Complete the setup:
+```
+npm install -g firebase-tools
+firebase login
+firebase init
+ionic build --prod
+```
+
+
+### The links for the theme project
+Project Console: https://console.firebase.google.com/project/emperor-don-carlos/overview
+Hosting URL: https://emperor-don-carlos.firebaseapp.com
+
+
+[This deployment guid](https://itnext.io/build-a-production-ready-pwa-with-angular-and-firebase-8f2a69824fcc) describes a production ready PWA process in decent depth.
+
+
+### Caching strategy:
+* performance (resources that don’t change often)
+* freshness (resources that change frequently)
+
+### Asset groups
+* lazy strategy
+* prefetch strategy
+
+10. Configuring a Firebase hosting for your PWA
+* configure rewrite as above to point all sources to your index.html file
+* the vendorChunk option in angular.json will because you will not update vendor libraries too often.
+
+
+10.3 Adding HTTP/2 server push with link headers
+12. Auditing your PWA with Lighthouse
+12.3 Using Lighthouse CLI
+
+iOS 11.3 has PWA support
+
+
 
 ## Forms with NgRx
 
