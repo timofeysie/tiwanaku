@@ -50,6 +50,7 @@ export class OptionsComponent implements OnInit {
   ngOnInit() { }
 
   onFormActions($event: Action[]) {
+    console.log('event', $event);
     // whenever form (child) component emits event with actions as payload, dispatch them
     const actions = $event;
     actions.forEach(this.store.dispatch.bind(this.store));
