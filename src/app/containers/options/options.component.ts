@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ThemeService } from '../../services/theme.service';
-import { IAppState, IFormState } from '../../store/state/app.state';
+import { IAppState } from '../../store/state/app.state';
+import { IFormState } from '../../store/state/form.state';
 import { Store, select, Action } from '@ngrx/store';
 
 const themes = {

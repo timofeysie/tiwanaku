@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Action } from '@ngrx/store';
-import { IFormState } from '../store/state/app.state';
+import { IFormState } from '../store/state/form.state';
 
 @Component({
   selector: 'piotrek-form',

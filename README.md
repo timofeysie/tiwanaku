@@ -265,6 +265,14 @@ During the [second commit](https://github.com/timofeysie/tiwanaku/commit/b1cba20
 If anyone can explain what meta reducers are and how to use them, that can be put back in.  But for now, just removing that section lets the app build, run and show it's list.  Yay!
 
 
+This work is going slowly.  After a huge Saturday afternoon nap I'm up at 12 and casually flipping through tv stations just to avoid Redux.  Tattoo competitions, a show called "Ice Road Truckers",  fishing shows, home shopping, unpopular series, horse racing, music videos from the eighties and nineties and now I can hear the first birds popping off at 4:33.
+
+Moving on and making the changes to move IFormState into its own file like the others.  Another successful compilation.  Now that the app is working again, time to get the for state to update the app state.
+
+The state will be altered only in the reducers which are pure functions with the signature of OldState => Action => NewState like formReducer.
+
+The Reactive Form needs to be connected with Redux. The form values are passed as input to the form component (a Presentational Component). Once there is a change of the input (propagated through implementation of OnChanges interface) the FormControls’ values are updated. Later on, we are also subscribing to distinct changes of FormControls’ values that pass the actions to the parent component (to be dispatched later).
+
 
 
 
