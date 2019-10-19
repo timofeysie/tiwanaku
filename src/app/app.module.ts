@@ -24,7 +24,6 @@ import { ErrorInterceptor } from './services/error.interceptor';
 import { ThemeService } from './services/theme.service';
 import { OptionsComponent } from './containers/options/options.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { reducers, metaReducers } from './reducers';
 import { FormComponent } from './form/form.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
@@ -51,13 +50,6 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    StoreModule.forRoot(reducers, {
-      metaReducers,
-      runtimeChecks: {
-        strictStateImmutability: true,
-        strictActionImmutability: true
-      }
-    }),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [

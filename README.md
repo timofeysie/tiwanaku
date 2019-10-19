@@ -74,7 +74,13 @@ ERROR in Error during template compile of 'AppModule'
 ```
 [This answer](https://stackoverflow.com/questions/49943081/function-expressions-are-not-supported-in-decorators) indicates that need to export the function as decorators don't accept function calls into their properties.  In our case it's a reducer.  This doesn't seem to stop us from running the app.  Still, a prod build can uncover issues that must be addressed to move projects forward.
 
-
+Line 5 in store/reducers/entity.recuders.ts looks like this.
+```
+export const entityReducers = (
+  state = initialEntityState,
+  action: EntityActions
+): IEntityState => {
+```
 
 In the theme builder Emperor Don Carlos app, the error was the following:
 ```
@@ -208,6 +214,57 @@ Since we have added form to the app state, I guess that's why it is not compilin
 According to [this SO answer](https://stackoverflow.com/questions/42742967/ngrx-state-is-undefined), setting a default case condition is the answer.
 
 IFormState
+
+That was from last week.  This week, changing this file name:
+src/app/store/reducers/form-reducer.ts to form.reducer.ts so that it's in line with all the other reducers.  Also, why is there an app/reducers/index.ts file?
+
+It has two empty functions:
+```
+export interface State { }
+export const reducers: ActionReducerMap<State> = { };
+```
+
+There is an implemented function like this in the app/store/reducers/app.reducers.ts file:
+```
+export const appReducers: ActionReducerMap<IAppState, any> = {
+```
+
+The article does have that file with the dash:
+```
+import { formReducer } from './reducers/form-reducer';
+```
+
+Add that to the previous list of differences:
+```
+IApplicationState -> IAppState
+app-state -> app.state
+```
+
+Using the GitLens plugin for VSCode, I can see that the app/reducers/index.ts file was committed as part of [this issue](https://github.com/timofeysie/tiwanaku/issues/9) 12 days ago.  That issue was created at the start of this section titled when this issue was started called *create a form to input a new category*.
+
+As part of standard workflow, an issue is created for whatever work is going on so that commits are connected to issues to give visibility to what is going on in a project.  So its easy to see that the file was just added for that commit.  We want our Redux stuff all in the store directory, so the  pre-existing app/store/reducers/app.reducers.ts should be where the reducers are kept.  Still, I can't find out where that file came from.
+
+Lets remove that file and start from the beginning again.  Setup the project by adding material, the @angular/cdk, and generate the form component.  Still, what is the freakin metaReducers?
+
+Previously on Desperate Housewives, we had this in the app.module:
+```
+StoreModule.forRoot(appReducers),
+```
+
+During the [second commit](https://github.com/timofeysie/tiwanaku/commit/b1cba2085c9554b5939e5afac9db2a1804195e62) this was added for the file we just deleted:
+```
+    StoreModule.forRoot(reducers, {
+      metaReducers,
+      runtimeChecks: {
+        strictStateImmutability: true,
+        strictActionImmutability: true
+      }
+    }),
+```
+
+If anyone can explain what meta reducers are and how to use them, that can be put back in.  But for now, just removing that section lets the app build, run and show it's list.  Yay!
+
+
 
 
 
