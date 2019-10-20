@@ -275,7 +275,43 @@ The Reactive Form needs to be connected with Redux. The form values are passed a
 
 In the options component, the formState: IFormState is put to use.  Now the actions are triggered and it's time for validation.   Along with the valid and states, PENDING — async validation is in progress could be put to use to check if there is a list for that category on Wikipedia.
 
+At this point the article says: *Debatable idea — whether we should keep the errors in the form’s state and update the validity of the controls in the same way as we update their values…*
 
+Thats great but the form never becomes valid.  Right now, getting this error from the form:
+```
+FormComponent.html:6 ERROR TypeError: Cannot read property 'isValid' of undefined
+    at Object.eval [as updateRenderer] (FormComponent.html:11)
+```
+
+There are two forms, myForm and form
+```
+Input() form: IFormState;
+...
+myForm: FormGroup = new FormGroup({ })
+```
+
+I guess the imput line needs to look like this:
+```
+@Input() form: IFormState = { isValid: false, isDirty: false };
+```
+
+But even with that change the error is still there.  On a different line: (FormComponent.html:18).
+
+What is the line: *Object.eval [as updateRenderer]* all about?
+
+Line 18 in the template:
+```
+[disabled]="!form.isValid"
+```
+
+The error happens about 12 times which indicates maybe that the form is not available when the template loads.  The handy ngIf comes to mind.  And then, since it's on the button div, there is no button, so there is no form.  Follow the money said Denzel.  Oh, and the errors are gone.
+
+The form component is used like this:
+```
+<piotrek-form [form]="formState" (actionsEmitted)="onFormActions($event)"></piotrek-form>
+```
+
+Since the article is done, it's time to look at the completed GitHub project to determine what is missing.  But our OptionsComponent seems to be all good for how it creates the formState object which is passed into the form component.
 
 
 

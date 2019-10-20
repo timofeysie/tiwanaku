@@ -37,31 +37,34 @@ const themes = {
   styleUrls: ['./options.component.css']
 })
 export class OptionsComponent implements OnInit {
-  public formState: IFormState;
-  constructor(
-    private theme: ThemeService,
-    private store: Store<IAppState>) {
-      // Subscribe to the newest version of the formState:
-      this.store.pipe(select(e => e.form)).subscribe(fs => {
-        this.formState = fs;
-      });
-  }
 
-  ngOnInit() { }
+    public formState: IFormState;
 
-  onFormActions($event: Action[]) {
-    console.log('event', $event);
-    // whenever form (child) component emits event with actions as payload, dispatch them
-    const actions = $event;
-    actions.forEach(this.store.dispatch.bind(this.store));
-  }
+    /**
+     * Subscribe to the newest version of the formState.
+     */
+    constructor(
+        private theme: ThemeService,
+        private store: Store<IAppState>) {
+            this.store.pipe(select(e => e.form)).subscribe(fs => {
+                this.formState = fs;
+        });
+    }
 
-  changeTheme(name) {
-    this.theme.setTheme(themes[name]);
-  }
+    ngOnInit() { }
 
-  changeSpeed(val) {
-    this.theme.setVariable('--speed', `${val}ms`);
-  }
+    onFormActions($event: Action[]) {
+        console.log('event', $event);
+        const actions = $event;
+        actions.forEach(this.store.dispatch.bind(this.store));
+    }
+
+    changeTheme(name) {
+        this.theme.setTheme(themes[name]);
+    }
+
+    changeSpeed(val) {
+        this.theme.setVariable('--speed', `${val}ms`);
+    }
 
 }

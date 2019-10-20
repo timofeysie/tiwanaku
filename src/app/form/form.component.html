@@ -3,8 +3,19 @@
 </p>
 <form [formGroup]="myForm">
     <mat-form-field class="example-full-width">
-        <input matInput placeholder="What is your name" [formControl]="myForm.controls['name']"/>
-        <mat-error *ngIf="myForm.controls['name'].hasError('required')">Required!</mat-error>
-        <mat-error *ngIf="myForm.controls['name'].hasError('maxlength')">Too long!</mat-error>
+        <input matInput 
+            placeholder="Go for it" 
+            [formControl]="myForm.controls['name']"/>
+        <mat-error *ngIf="myForm.controls['name'].hasError('required')">
+            Required!
+        </mat-error>
+        <mat-error *ngIf="myForm.controls['name'].hasError('maxlength')">
+            Too long!
+        </mat-error>
     </mat-form-field>
+    <div>
+        <button mat-button color="primary" type="submit" 
+        [disabled]="!form.isValid">Submit</button>
+    </div>
 </form>
+<div>Form: {{form | json}}</div>

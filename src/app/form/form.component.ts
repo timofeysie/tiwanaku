@@ -12,8 +12,9 @@ import { formNameChanged, formSetValidity } from '../store/actions/form.actions'
 })
 export class FormComponent implements OnInit, OnChanges {
 
-    @Input() form: IFormState;
+    @Input() form: IFormState = { isValid: false, isDirty: false };
     @Output() actionsEmitted: EventEmitter<Action[]> = new EventEmitter();
+    @Output() formSubmitted: EventEmitter<{}> = new EventEmitter();
 
     constructor() { }
 
@@ -23,7 +24,7 @@ export class FormComponent implements OnInit, OnChanges {
      * instead of every key press
      */
     myForm: FormGroup = new FormGroup({
-        name: new FormControl('', {
+        name: new FormControl(this.form.name, {
             updateOn: 'blur',
             validators: [
                 Validators.required,
@@ -32,17 +33,23 @@ export class FormComponent implements OnInit, OnChanges {
         })
     });
 
+    onSubmit() {
+        this.formSubmitted.next();
+    }
+
     ngOnInit() {
-        this.myForm.controls['name'].valueChanges.pipe(distinctUntilChanged()).subscribe((value) => {
-            this.actionsEmitted.emit([formNameChanged(value)]);
+        this.myForm.controls['name']
+            .valueChanges.pipe(distinctUntilChanged())
+            .subscribe((value) => {
+                this.actionsEmitted.emit([formNameChanged(value)]);
         });
         this.myForm
-        .statusChanges
-        .pipe(
-          distinctUntilChanged(), 
-          map(status => status === 'VALID'))
-        .subscribe(isValid => {
-          this.actionsEmitted.emit([formSetValidity(isValid)]);
+            .statusChanges
+            .pipe(
+              distinctUntilChanged(), 
+              map(status => status === 'VALID'))
+            .subscribe(isValid => {
+              this.actionsEmitted.emit([formSetValidity(isValid)]);  
         });
     }
 
