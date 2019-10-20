@@ -1,7 +1,7 @@
 import { RouterReducerState } from '@ngrx/router-store';
 import { IEntityState, initialEntityState } from './entity.state';
 import { initialConfigState, IConfigState } from './config.state';
-import { getDefaultFormState, IFormState } from './form.state';
+import { IFormState, initialFormState } from './form.state';
 
 export interface IAppState {
   router?: RouterReducerState;
@@ -14,6 +14,7 @@ export interface IAppState {
 export const initialAppState: IAppState = {
   entities: initialEntityState,
   config: initialConfigState,
+  form: initialFormState,
   error: null
 };
 

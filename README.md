@@ -290,7 +290,7 @@ Input() form: IFormState;
 myForm: FormGroup = new FormGroup({ })
 ```
 
-I guess the imput line needs to look like this:
+I guess the input line needs to look like this:
 ```
 @Input() form: IFormState = { isValid: false, isDirty: false };
 ```
@@ -313,6 +313,35 @@ The form component is used like this:
 
 Since the article is done, it's time to look at the completed GitHub project to determine what is missing.  But our OptionsComponent seems to be all good for how it creates the formState object which is passed into the form component.
 
+Another somewhat related issue is that the on blur function gets called twice.
+Piotr Gąsiorowski seems to talk about this in the comments.  On Sep 29, 2018 he said:
+
+*you can do it in two ways:*
+
+*valueChanges.pipe(distinctUntilChanged()) which is described in the blog itself. I really prefer this approach, since this is the first place you can attempt to stop the value change propagation.
+let the same value update the state again, and in ngOnChanges(…) use setValue on control with emitEvent set to false. This also breaks the loop.*
+
+*Generally approach 2. seems to be easier, since in 1. for non-primitive values you need to provide the function that compares objects, but on the other hand it updates store two times.*
+
+*No matter the choice you make, it’s good to change the ‘updateOn’ option to ‘blur’ in order to emit actions after the whole value was provided.*
+
+When converting the single app/form state class into two separate files left the default form creation state in the form file, and not called in the app state class.
+
+Where does getDefaultFormState get used in the app?  The defaults are set in the app.state like this:
+```
+export const initialAppState: IAppState = {
+  entities: initialEntityState,
+  form: this.getDefaultFormState,
+  config: initialConfigState,
+  error: null
+};
+```
+
+That form line is my own addition.
+That function in question, *getDefaultFormState*, is used in the reducer.  Look at the way the config is initialised and the method is somewhat different.  But my attempt to approximate that style has come to nothing.  Time to watch Start Wars and let the answer *happen*.
+
+
+The *formReducer* was not configured in the main app.reducers class.  That took quite a while, but there are no errors and we get out form state acting as expected.  Yay!
 
 
 
