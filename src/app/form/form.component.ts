@@ -1,9 +1,9 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Action } from '@ngrx/store';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { IFormState } from '../store/state/form.state';
-import { formNameChanged } from '../store/actions/form.actions';
+import { formNameChanged, formSetValidity } from '../store/actions/form.actions';
 
 @Component({
   selector: 'piotrek-form',
@@ -24,13 +24,25 @@ export class FormComponent implements OnInit, OnChanges {
      */
     myForm: FormGroup = new FormGroup({
         name: new FormControl('', {
-        updateOn: 'blur'
+            updateOn: 'blur',
+            validators: [
+                Validators.required,
+                Validators.maxLength(10)
+            ]
         })
     });
 
     ngOnInit() {
         this.myForm.controls['name'].valueChanges.pipe(distinctUntilChanged()).subscribe((value) => {
             this.actionsEmitted.emit([formNameChanged(value)]);
+        });
+        this.myForm
+        .statusChanges
+        .pipe(
+          distinctUntilChanged(), 
+          map(status => status === 'VALID'))
+        .subscribe(isValid => {
+          this.actionsEmitted.emit([formSetValidity(isValid)]);
         });
     }
 

@@ -11,15 +11,11 @@ import { Router } from '@angular/router';
 })
 export class EntitiesComponent implements OnInit {
     entities$ = this._store.pipe(select(selectEntityList));
-
+ 
     constructor(private _store: Store<IAppState>, private _router: Router) { }
 
     ngOnInit() {
         this._store.dispatch(new GetEntities());
     }
-
-    // navigateToEntity(entity: Object) {
-    //     this._router.navigate(['entity', { state: entity}]);
-    // }
 
 }

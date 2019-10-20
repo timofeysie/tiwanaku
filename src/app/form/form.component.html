@@ -3,6 +3,8 @@
 </p>
 <form [formGroup]="myForm">
     <mat-form-field class="example-full-width">
-      <input matInput placeholder="Enter a category in singular form" [formControl]="myForm.controls['name']"/>
+        <input matInput placeholder="What is your name" [formControl]="myForm.controls['name']"/>
+        <mat-error *ngIf="myForm.controls['name'].hasError('required')">Required!</mat-error>
+        <mat-error *ngIf="myForm.controls['name'].hasError('maxlength')">Too long!</mat-error>
     </mat-form-field>
 </form>

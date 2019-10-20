@@ -273,7 +273,11 @@ The state will be altered only in the reducers which are pure functions with the
 
 The Reactive Form needs to be connected with Redux. The form values are passed as input to the form component (a Presentational Component). Once there is a change of the input (propagated through implementation of OnChanges interface) the FormControls’ values are updated. Later on, we are also subscribing to distinct changes of FormControls’ values that pass the actions to the parent component (to be dispatched later).
 
-In the options component, the formState: IFormState is put to use.
+In the options component, the formState: IFormState is put to use.  Now the actions are triggered and it's time for validation.   Along with the valid and states, PENDING — async validation is in progress could be put to use to check if there is a list for that category on Wikipedia.
+
+
+
+
 
 
 ## Creating a theme service
