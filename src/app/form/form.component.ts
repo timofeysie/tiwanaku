@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Action } from '@ngrx/store';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { IFormState } from '../store/state/form.state';
-import { formNameChanged, formSetValidity } from '../store/actions/form.actions';
+import { formCategoryChanged, formSetValidity } from '../store/actions/form.actions';
 
 @Component({
   selector: 'piotrek-form',
@@ -24,7 +24,7 @@ export class FormComponent implements OnInit, OnChanges {
      * instead of every key press
      */
     myForm: FormGroup = new FormGroup({
-        name: new FormControl(this.form.name, {
+        category: new FormControl(this.form.category, {
             updateOn: 'blur',
             validators: [
                 Validators.required,
@@ -38,10 +38,10 @@ export class FormComponent implements OnInit, OnChanges {
     }
 
     ngOnInit() {
-        this.myForm.controls['name']
+        this.myForm.controls['category']
             .valueChanges.pipe(distinctUntilChanged())
             .subscribe((value) => {
-                this.actionsEmitted.emit([formNameChanged(value)]);
+                this.actionsEmitted.emit([formCategoryChanged(value)]);
         });
         this.myForm
             .statusChanges
@@ -61,7 +61,7 @@ export class FormComponent implements OnInit, OnChanges {
         if (!changes.form || changes.form.isFirstChange()) {
             return;
         }
-        this.myForm.controls['name'].setValue(changes.form.currentValue.name);
+        this.myForm.controls['category'].setValue(changes.form.currentValue.category);
     }
 
 }

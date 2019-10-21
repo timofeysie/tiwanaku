@@ -1,15 +1,12 @@
-<p>
-  Edit category
-</p>
 <form [formGroup]="myForm">
     <mat-form-field class="example-full-width">
         <input matInput 
             placeholder="Go for it" 
-            [formControl]="myForm.controls['name']"/>
-        <mat-error *ngIf="myForm.controls['name'].hasError('required')">
+            [formControl]="myForm.controls['category']"/>
+        <mat-error *ngIf="myForm.controls['category'].hasError('required')">
             Required!
         </mat-error>
-        <mat-error *ngIf="myForm.controls['name'].hasError('maxlength')">
+        <mat-error *ngIf="myForm.controls['category'].hasError('maxlength')">
             Too long!
         </mat-error>
     </mat-form-field>
@@ -18,4 +15,4 @@
         [disabled]="!form.isValid">Submit</button>
     </div>
 </form>
-<div>Form: {{form | json}}</div>
+<p>Form: {{form | json}}</p>

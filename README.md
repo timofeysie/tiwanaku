@@ -173,7 +173,7 @@ app-state -> app.state
 
 Do we just add these to the app state?
 ```
-export const FORM_NAME_CHANGED = 'FORM_NAME_CHANGED';
+export const FORM_CATEGORY_CHANGED = 'FORM_CATEGORY_CHANGED';
 export const FORM_SET_VALIDITY = 'FORM_SET_VALIDITY';
 ```
 
@@ -342,6 +342,36 @@ That function in question, *getDefaultFormState*, is used in the reducer.  Look 
 
 
 The *formReducer* was not configured in the main app.reducers class.  That took quite a while, but there are no errors and we get out form state acting as expected.  Yay!
+
+Next steps, either change the name field to category, and/or and the other options for the backend query:
+```
+lang=en&category=fallacies&wdt=P31&wd=Q186150
+```
+The [docs](https://en.wikibooks.org/wiki/SPARQL/Prefixes) say *WDQS understands many shortcut abbreviations, known as prefixes. Some are internal to Wikidata wd, wdt, p, ps, bd, etc. and many others are commonly used external prefixes, like rdf, skos, owl, schema, etc.*
+
+In the following query, we are asking for items where there is a statement of "P279 = Q7725634" or in fuller terms, selecting subjects that have a predicate of "subclass of" with an object of = "literary work".
+
+For simple WDQS (Wikidata Query Service) triples, items should be prefixed with wd:, and properties with wdt:
+```
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+...
+SELECT ?s ?desc WHERE {
+  ?s wdt:P279 wd:Q7725634 .
+  OPTIONAL {
+      ?s rdfs:label ?desc 
+      FILTER (LANG(?desc) = "en").
+  }
+}
+```
+
+So, wd = entity, wdt = prop.  Feels like there is a long way to go to actually understand what we are doing here with WikiData.  Anyhow, cracking on.  Time to change name to category, and then add inputs for wd and wdt.
+
+Name changed, and on the verge of adding a new field, second thoughts on that emerge.  Do we *really* want the user to have to find out what kind of codes to use to get a list of items?  Not really.  We need to automate that process or at least offer a list of options, which means a select or .
+
+A more useful feature is a list of categories for which the codes are know, and allow the user to create new ones if they want.  That way we can have our current two lists and use the previously created form to make a new one while someone figures out if we can get the codes from the category in the first place.
+
+So lets create our category list.
 
 
 
@@ -950,7 +980,7 @@ How does this work?  *the router parses the URL and creates a router state snaps
 
 Got all that?  It all boils down to using something called the *RouterConnectedToStoreModule*.
 
-Create a new reducer: ROUTER_NAVIGATION.  Looking at the project in the monorepo we never actaully implemented this part.  That should probably happen next.  For now we can pass the whole entity via the router, but it's not that simple.
+Create a new reducer: ROUTER_NAVIGATION.  Looking at the project in the monorepo we never actually implemented this part.  That should probably happen next.  For now we can pass the whole entity via the router, but it's not that simple.
 
 Now, the route will change to /entity, without an id, which means that if a person tries to share that link, the app will break.  We want to have both full object and the id in the url.  However, the portion of the app that relies on the object will still break.
 
@@ -1282,7 +1312,7 @@ We use the [Conchifolia](https://github.com/timofeysie/conchifolia) NodeJS serve
 We want to use the Q-code entity id for this.  Using Rxjs an observable stream needs to be created to massage the results into what can be used by NgRx.  Map can be used to run a function on each item.  We don't actually need the id as the cognitive_bias is the url with the Q-code.  The serve *could* parse the results and create an id from this string, and then find the Q-code from the Wikimedia parsing results but it's still not clear if that is the best way to go.
 
 
-The entity list from Loranthifolia is a combination of WikiData and WikiMedia lists.  The first is a query from the Conchifolia server.  The second one returns the html sections from the Wikipedia page that has three categories of entities.  This list is then parsed and the resulting data is merged with the WikiData list.  This is why there are two slightly overlapping paramteter lists for the entity model.
+The entity list from Loranthifolia is a combination of WikiData and WikiMedia lists.  The first is a query from the Conchifolia server.  The second one returns the html sections from the Wikipedia page that has three categories of entities.  This list is then parsed and the resulting data is merged with the WikiData list.  This is why there are two slightly overlapping parameter lists for the entity model.
 
 
 

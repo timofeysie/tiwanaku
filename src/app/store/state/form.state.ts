@@ -1,5 +1,5 @@
 export interface IFormState {
-    name?: string;
+    category?: string;
     isValid: boolean;
     isDirty: boolean;
 }

@@ -1,9 +1,9 @@
 import { Action } from "@ngrx/store";
 
-export const FORM_NAME_CHANGED = 'FORM_NAME_CHANGED';
+export const FORM_CATEGORY_CHANGED = 'FORM_CATEGORY_CHANGED';
 export const FORM_SET_VALIDITY = 'FORM_SET_VALIDITY';
 
-export interface IFormNameChangedAction extends Action {
+export interface IFormCategoryChangedAction extends Action {
     payload: {
         value: string;
     }
@@ -15,9 +15,9 @@ export interface IFormSetValidityAction extends Action {
     }
 }
 
-export function formNameChanged(value: string): IFormNameChangedAction {
+export function formCategoryChanged(value: string): IFormCategoryChangedAction {
     return {
-        type: FORM_NAME_CHANGED,
+        type: FORM_CATEGORY_CHANGED,
         payload: {
             value
         }
