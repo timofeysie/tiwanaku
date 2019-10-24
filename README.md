@@ -373,6 +373,38 @@ A more useful feature is a list of categories for which the codes are know, and 
 
 So lets create our category list.
 
+One problem is that the old API is not working anymore.
+```
+Request URL: https://radiant-springs-38893.herokuapp.com/api/list/en
+Request Method: GET
+Status Code: 503 Service Unavailable
+```
+
+Since moving on to pipes with Azure & AWS, old Heroku apps are dropping off.
+
+So what is our new API?
+
+The Azure version is running [at this location](https://github.com/timofeysie/strumosa-pipe).  The [sample API call](http://strumosa.azurewebsites.net/items?lang=en&category=fallacies&wdt=P31&wd=Q186150).
+
+[This is the middleware in Acapana](https://github.com/timofeysie/acapana/blob/master/src/redux/middleware/index.js):
+```
+    const category = action.payload.title;
+    const language = 'en';
+    const wdt = '';
+    const wd = '';
+    const sparql = `
+        SELECT ?${category} ?${category}Label ?${category}Description WHERE {
+            SERVICE wikibase:label {
+                bd:serviceParam wikibase:language "[AUTO_LANGUAGE],${language}".
+            }
+            ?${category} wdt:${wdt} wd:${wd}.
+        }
+        LIMIT 1000`
+    const url = wdk.sparqlQuery(sparql);
+```
+
+
+http://www.wikidata.org/entity/Q29598
 
 
 ## Creating a theme service

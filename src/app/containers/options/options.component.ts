@@ -3,6 +3,7 @@ import { ThemeService } from '../../services/theme.service';
 import { IAppState } from '../../store/state/app.state';
 import { IFormState } from '../../store/state/form.state';
 import { Store, select, Action } from '@ngrx/store';
+import { EntityService } from '../../services/entity.service';
 
 const themes = {
     autumn: {
@@ -45,7 +46,8 @@ export class OptionsComponent implements OnInit {
      */
     constructor(
         private theme: ThemeService,
-        private store: Store<IAppState>) {
+        private store: Store<IAppState>,
+        private entityService: EntityService) {
             this.store.pipe(select(e => e.form)).subscribe(fs => {
                 this.formState = fs;
         });
@@ -54,7 +56,11 @@ export class OptionsComponent implements OnInit {
     ngOnInit() { }
 
     onFormActions($event: Action[]) {
-        console.log('event', $event);
+        // fallacies&wdt=P31&wd=Q186150
+        // const kiss = this.entityService.createSPARQL('fallacies','P31','Q186150', 'en');
+        // cognitive_bias wdt:P31 wd:Q1127759.
+        const kiss = this.entityService.createSPARQL('cognitive_bias','P31','Q1127759', 'en');
+        console.log('event', kiss);
         const actions = $event;
         actions.forEach(this.store.dispatch.bind(this.store));
     }

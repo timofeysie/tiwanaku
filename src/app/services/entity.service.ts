@@ -7,6 +7,7 @@ import { Store, select } from '@ngrx/store';
 import { IAppState } from '../store/state/app.state';
 import { selectConfig } from '../store/selectors/config.selector';
 import { State } from '@ngrx/store';
+import * as wdk from 'wikidata-sdk';
 
 @Injectable()
 export class EntityService implements OnInit {
@@ -51,6 +52,22 @@ export class EntityService implements OnInit {
   getOfflineList(): Observable<Object> {
     const list = this._http.get('../../assets/data/wikidata.json');
     return list;
+  }
+
+  /**
+  * fallacies&wdt=P31&wd=Q186150
+  */
+  createSPARQL(category: string, wdt: string, wd: string, language: string): string {
+    // Aegyptus
+    const sparql = `
+        SELECT ?${category} ?${category}Label ?${category}Description WHERE {
+            SERVICE wikibase:label {
+                bd:serviceParam wikibase:language "[AUTO_LANGUAGE],${language}".
+            }
+            ?${category} wdt:${wdt} wd:${wd}.
+        }
+        LIMIT 1000`
+        return wdk.sparqlQuery(sparql);
   }
 
 }
