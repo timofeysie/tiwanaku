@@ -7,6 +7,8 @@ It provides an example of managing application state using Angular with Redux ba
 
 ## Table of contents
 
+1. [Workflow](#workflow)
+1. [Deploying the PWA](#deploying-the-PWA)
 1. [Creating a theme service](#creating-a-theme-service)
 1. [Testing Redux in Angular](#testing-Redux-in-Angular)
 1. [Upgrading to Angular 7.2 and the entity detail](#upgrading-to-Angular-7.2-and-the-entity-detail)
@@ -35,7 +37,31 @@ ng test
 ng e2e
 ```
 
+### Lib status
+
 Currently using Angular 7.2.14 and ngrx 8.2.0.
+
+
+
+## The category select
+
+Opened issue #14 to cover this.
+
+Timople.
+Lilianople.
+
+
+Aude of Merviel was sitting down to dinner with her husband when he mentioned consolamentum.
+
+"Wife, how is it that those people believe in consolamentum?"
+
+"Husband, how is it possible that I cannot believe in our Lord? Also, what might I do to believe in God, and to believe that the body of Christ is really on the altar?” She said during confession that she gave to the poor not for her soul but so that others would see her as a good person.
+
+She was then sentenced to wear a double yellow cross on her back for the rest of her life. A witness told Fournier that she deserved to be put to death for saying that Christ was not created through divine intervention, but "just through screwing, like everybody else.".
+
+After this time, Fournier was rapidly promoted through the ranks of the church eventually rising to become Pope as Benedict XII in 1334.
+
+
 
 ## Deploying the PWA
 
@@ -359,7 +385,7 @@ PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 SELECT ?s ?desc WHERE {
   ?s wdt:P279 wd:Q7725634 .
   OPTIONAL {
-      ?s rdfs:label ?desc 
+      ?s rdfs:label ?desc
       FILTER (LANG(?desc) = "en").
   }
 }

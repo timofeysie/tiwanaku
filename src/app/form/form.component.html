@@ -1,7 +1,7 @@
 <form [formGroup]="myForm">
     <mat-form-field class="example-full-width">
-        <input matInput 
-            placeholder="Go for it" 
+        <input matInput
+            placeholder="Go for it"
             [formControl]="myForm.controls['category']"/>
         <mat-error *ngIf="myForm.controls['category'].hasError('required')">
             Required!
@@ -11,8 +11,18 @@
         </mat-error>
     </mat-form-field>
     <div>
-        <button mat-button color="primary" type="submit" 
+        <button mat-button color="primary" type="submit"
         [disabled]="!form.isValid">Submit</button>
     </div>
+
+    <mat-form-field>
+      <mat-label>{{catObject.label}}</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let category of categories" [value]="catObject.label">
+          {{category.label}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
 </form>
 <p>Form: {{form | json}}</p>

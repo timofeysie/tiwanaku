@@ -4,14 +4,31 @@ import { Action } from '@ngrx/store';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { IFormState } from '../store/state/form.state';
 import { formCategoryChanged, formSetValidity } from '../store/actions/form.actions';
+import { MatSelectModule } from '@angular/material';
 
+/**
+*lang=en&category=fallacies&wdt=P31&wd=Q186150
+*/
 @Component({
   selector: 'piotrek-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.css']
 })
 export class FormComponent implements OnInit, OnChanges {
-
+    categories = [
+        {
+          label: 'cognitive_bias',
+          wdt: 'P31',
+          wd: 'Q29598',
+          language: 'en'
+        }, {
+          label: 'fallacies',
+          wdt: 'P31',
+          wd: 'Q186150',
+          language: 'en'
+      }
+    ];
+    catObject = this.categories[0];
     @Input() form: IFormState = { isValid: false, isDirty: false };
     @Output() actionsEmitted: EventEmitter<Action[]> = new EventEmitter();
     @Output() formSubmitted: EventEmitter<{}> = new EventEmitter();
@@ -46,10 +63,10 @@ export class FormComponent implements OnInit, OnChanges {
         this.myForm
             .statusChanges
             .pipe(
-              distinctUntilChanged(), 
+              distinctUntilChanged(),
               map(status => status === 'VALID'))
             .subscribe(isValid => {
-              this.actionsEmitted.emit([formSetValidity(isValid)]);  
+              this.actionsEmitted.emit([formSetValidity(isValid)]);
         });
     }
 
