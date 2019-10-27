@@ -12,6 +12,7 @@
 .content {
     background-color: var(--ion-color-light-tint);
     color: var(--ion-color-primary-tint);
+    min-height: 100%;
 }
 
 .item-md {

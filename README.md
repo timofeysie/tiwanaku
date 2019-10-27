@@ -47,19 +47,49 @@ Currently using Angular 7.2.14 and ngrx 8.2.0.
 
 Opened issue #14 to cover this.
 
-Timople.
-Lilianople.
+We need a list of categories with details to support this api call from the [strumosa-pipe](https://github.com/timofeysie/strumosa-pipe):
+```
+http://strumosa.azurewebsites.net/items?lang=en&category=fallacies&wdt=P31&wd=Q186150
+```
 
+Eventually this may be a list and not a select.  What we have currently is a master/detail pattern.  What we need is a master/master/detail pattern, or rather a master/list/detail pattern.  Categories are the master in this pattern.
 
-Aude of Merviel was sitting down to dinner with her husband when he mentioned consolamentum.
+Created a service to make the call in entity.service:
+```
+getCategoryList(category: string, wdt: string, wd:string, language: string): Observable<IEntityHttp> {
+```
 
-"Wife, how is it that those people believe in consolamentum?"
+Now, we need a new action, or don't we already have one to kick off fetching the list?
 
-"Husband, how is it possible that I cannot believe in our Lord? Also, what might I do to believe in God, and to believe that the body of Christ is really on the altar?” She said during confession that she gave to the poor not for her soul but so that others would see her as a good person.
+Form actions:
+```
+export const FORM_CATEGORY_CHANGED = 'FORM_CATEGORY_CHANGED';
+export const FORM_SET_VALIDITY = 'FORM_SET_VALIDITY';
+```
 
-She was then sentenced to wear a double yellow cross on her back for the rest of her life. A witness told Fournier that she deserved to be put to death for saying that Christ was not created through divine intervention, but "just through screwing, like everybody else.".
+Entity actions:
+```
+export enum EEntityActions {
+  GetEntities = '[Entity] Get Entities',
+  GetEntitiesSuccess = '[Entity] Get Entities Success',
+  GetEntity = '[Entity] Get Entity',
+  GetEntitySuccess = '[Entity] Get Entity Success'
+}
+```
 
-After this time, Fournier was rapidly promoted through the ranks of the church eventually rising to become Pope as Benedict XII in 1334.
+Seems like FORM_CATEGORY_CHANGED should call GetEntities.  We will need to add the whole category object with the parameters in the object so that the call can include anything the user wants to try out.
+
+Where does the form category change get kicked off?
+
+In the reducer:
+```
+export function formReducer(state: IFormState = getDefaultFormState(), action: Action): IFormState {
+    switch (action.type) {
+        case FORM_CATEGORY_CHANGED: {
+            const typedAction = <IFormCategoryChangedAction>action;
+            return { ...state, category: typedAction.payload.value, isDirty: true };
+        }
+```
 
 
 

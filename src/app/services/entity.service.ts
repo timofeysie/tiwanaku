@@ -16,6 +16,7 @@ export class EntityService implements OnInit {
   config$ = this._store.pipe(select(selectConfig));
   entitiesUrl = `${environment.apiUrl}entities.json`;
   private backendListUrl = 'https://radiant-springs-38893.herokuapp.com/api/list';
+  private strumosaUrl = 'http://strumosa.azurewebsites.net/items';
 
 
   constructor(private _http: HttpClient,
@@ -37,6 +38,14 @@ export class EntityService implements OnInit {
 
   getEntities(): Observable<IEntityHttp> {
     return this._http.get<IEntityHttp>(this.entitiesUrl);
+  }
+
+  // ?lang=en&category=fallacies&wdt=P31&wd=Q186150
+  getCategoryList(category: string, wdt: string, wd:string, language: string): Observable<IEntityHttp> {
+    let propertyValue = this.stateObj.getValue().config;
+    console.log('propertyValue',propertyValue);
+    const params = `/lang=${language}&category=${category}&wdt=${wdt}&wd=${wd}`;
+    return this._http.get<IEntityHttp>(this.strumosaUrl + this.lang);
   }
 
   getList(): Observable<IEntityHttp> {
