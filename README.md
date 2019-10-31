@@ -92,11 +92,14 @@ export function formReducer(state: IFormState = getDefaultFormState(), action: A
 ```
 
 
+When running the app, the form select still needs some work.  It doesn't change and I'm thinking show the total number of results and a link to view them would be a decent feature.
+
+
 
 ## Deploying the PWA
 
 [The official Ionic/Firebase]
-(https://ionicframework.com/docs/publishing/progressive-web-app) lays out the baisc steps, some of which are applicable to Ionic only, such as the build system.
+(https://ionicframework.com/docs/publishing/progressive-web-app) lays out the basic steps, some of which are applicable to Ionic only, such as the build system.
 ```
 npm install -g @angular/cli // if you haven't already
 ng add @angular/pwa
