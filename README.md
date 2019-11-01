@@ -94,6 +94,18 @@ export function formReducer(state: IFormState = getDefaultFormState(), action: A
 
 When running the app, the form select still needs some work.  It doesn't change and I'm thinking show the total number of results and a link to view them would be a decent feature.
 
+Aftrt dpomg a bit of UX thinking, what we want is a list-list=detail pattern that is keyboard navigatable both up and down/left and right, chunked lists and cached nicely with deep comparrisons for changed data.  It would also be nice to use variable fonts to dynamically adjust the text for its container.  As well, a kind of pwa dashboard to show cache and its state. Theres a whole list of to do items on a few of the projects, so this list here should be focused on just what is needed to implement the categories selection.  We can get back to inputting a new category ofter our switcher is finished.
+
+The first task is a list of categories.  The selected category shows a list of its items on the right.  Press the right arrow key or select an item in the list with a mouse or a tap, and the categories shift left off screen and the item list shifts left to take the place of the categories and the item descriptions are shown on the right/  If you again move right, the item detail page is shown on the right0
+
+Chunking means that each list shows only a certain number per page.  Seven might be the magic number, but we will add a setting to adjust this.  We have ten fingures so that seems like a good idea to me.
+
+The next thing then is how to show the chunked sections.  Pagination?  Vertical scrolling without chunking?  No one wants to scroll thru a long list.  Currently there are 99 items on the cognitive bias list.  That's about 90 too many.  I think pagination, despite the amount of real estate it takes up on the screen is the go.  We will also want a text search at the top.
+
+So with this changes, we have a good idea of what the UI is going to look like, and what kind of UX we want to support.  Currently what we have is a select on the options page with a half finished form.  I think we should copy the current item list state and create another container component to be the left-most category list.
+
+First, breakfast.
+ 
 
 
 ## Deploying the PWA
