@@ -152,6 +152,7 @@ Firebase is a great option to both host the PWA app as well as provide a framewo
 
 But we're still in development here, so for now we might want to just use a static service to return a static list.
 
+To start the entity functionality can be duplicated as cateogries.  Then we will change it so that the selected category will become the values used to make the entity list call.
 
 
 ## Deploying the PWA
@@ -172,14 +173,17 @@ Invalid rule result: Instance of class Promise.
 This is the Ionic build.
 ```
 ionic build --prod --service-worker
+
 ```
 
 Angular would be something like this:
 ```
 ng build --prod --service-worker
+ng build --prod
 ```
 
-For this project however we get the following error:
+
+For another project we got the following error:
 ```
 chunk {3} styles.79cf99a676d1ea0664db.css (styles) 186 kB [initial] [rendered]
 ERROR in Error during template compile of 'AppModule'
@@ -224,6 +228,89 @@ firebase login
 firebase init
 ionic build --prod
 ```
+
+Back to the ng build command in this project (a few other PWA projects are in progress as you can tell).
+We are currently getting this error at step two of the PWA setup process:
+```
+ERROR in Error during template compile of 'AppModule'
+  Function expressions are not supported in decorators in 'ɵ0'
+    'ɵ0' references 'appReducers' at src\app\app.module.ts(44,25)
+      'appReducers' references 'entityReducers' at src\app\store\reducers\app.reducers.ts(11,13)
+        'entityReducers' contains the error at src\app\store\reducers\entity.reducers.ts(5,31)
+          Consider changing the function expression into an exported function.
+```
+
+The first GitHub mention of that error shows this:
+This wont work:
+```
+export const myFunc = (): boolean => true;
+```
+
+This will work:
+```
+export function myFunc(): boolean { return true; }
+```
+
+A StackOverflow answer shows this:
+```
+{path: 'auth', loadChildren: () => AuthModule }
+```
+
+This line is your problem. The AoT compilation cannot manage the funciton expression, it needs static references. Replace with this:
+```
+{path: 'auth', loadChildren: './auth/auth.module#AuthModule' }
+```
+
+Entity reducer line 5:
+```
+export const entityReducers = (
+```
+
+However if we try this:
+```
+export function appReducers(): ActionReducerMap<IAppState, any>  {
+```
+
+then every line after has red squigglies with the first one's tool tip saying:
+*A function whose declared type is neither 'void' nor 'any' must return a value.ts(2355)*
+
+So obviously TypeScript is not down with that.  [This SO answer](https://stackoverflow.com/questions/50311898/why-do-i-have-to-export-the-function-i-use-in-angular-appmodule-import-module) puts the problem well:
+*The issues you are having are due to the Ahead-of-Time (AOT) compiler in Angular.* 
+*By default, ng serve and ng build use the Just-in-Time (JIT) compiler.*
+*However, ng build --prod uses the AOT compiler. You can simulate this same behavior doing ng serve --aot.*
+*The AOT Collector does not support the arrow function syntax.
+*Angular generates a class factory in a separate module and that factory can only access exported functions.*
+
+What???  There must be close to 100 arrow functions in this app.  Just search for '=>' and you'll see.  So, this could be a deal breaker.
+
+TypeScript is not going to go for it either.
+
+Going thru some other options.  Due to this warning:
+```
+Your global Angular CLI version (8.3.9) is greater than your local
+version (7.3.8). The local Angular CLI version is used.
+```
+
+Tried this:
+```
+npm install --save-dev @angular/cli@latest
+```
+
+But then this:
+```
+>ng build --prod
+An unhandled exception occurred: Could not find the implementation for builder @angular-devkit/build-angular:browser
+See "C:\Users\timof\AppData\Local\Temp\ng-SExoAs\angular-errors.log" for further details.
+```
+
+Doing this didn't help:
+```
+npm install --save-dev @angular-devkit/build-angular
+```
+
+
+
+
 
 
 ### The links for the theme project
