@@ -308,6 +308,27 @@ Doing this didn't help:
 npm install --save-dev @angular-devkit/build-angular
 ```
 
+A GitHub issue from the Angular repo says this:
+*Angular version 5 and CLI version 1, are not longer supported* *
+https://angular.io/guide/releases#support-policy-and-schedule*
+*I suggest you update to version 8 by running the update command via ng update @angular/cli @angular/core,*
+*This is suggested because when running the update command several migrations will be executed to make your project compatible with the new version which otherwise you'd need to do manually.*
+
+```
+ng update @angular/cli @angular/core
+...
+Package '@angular/cli' is already up to date.
+                  Package "@ngrx/router" has an incompatible peer dependency to "@angular/core" (requires "^2.0.0-rc.3" (extended), would install "8.2.13").
+                  Package "@ngrx/router" has an incompatible peer dependency to "@angular/platform-browser" (requires "^2.0.0-rc.3" (extended), would install "8.2.13").
+                  Package "@ngrx/router" has an incompatible peer dependency to "@angular/common" (requires "^2.0.0-rc.3" (extended), would install "8.2.13").
+                  Package "@ngrx/router" has an incompatible peer dependency to "@angular/compiler" (requires "^2.0.0-rc.3" (extended), would install "8.2.13").
+...
+Incompatible peer dependencies found.
+Peer dependency warnings when installing dependencies means that those dependencies might not work correctly together.
+You can use the '--force' option to ignore incompatible peer dependencies and instead address these warnings later.
+```
+
+Used the force flage, so now Aunglar is at 8.2.14=3, but the *Could not find the implementation for builder @angular-devkit/build-angular:dev-server* error is still happening, both ng serve and npm start fail with the same message.
 
 
 
