@@ -318,10 +318,10 @@ https://angular.io/guide/releases#support-policy-and-schedule*
 ng update @angular/cli @angular/core
 ...
 Package '@angular/cli' is already up to date.
-                  Package "@ngrx/router" has an incompatible peer dependency to "@angular/core" (requires "^2.0.0-rc.3" (extended), would install "8.2.13").
-                  Package "@ngrx/router" has an incompatible peer dependency to "@angular/platform-browser" (requires "^2.0.0-rc.3" (extended), would install "8.2.13").
-                  Package "@ngrx/router" has an incompatible peer dependency to "@angular/common" (requires "^2.0.0-rc.3" (extended), would install "8.2.13").
-                  Package "@ngrx/router" has an incompatible peer dependency to "@angular/compiler" (requires "^2.0.0-rc.3" (extended), would install "8.2.13").
+Package "@ngrx/router" has an incompatible peer dependency to "@angular/core" (requires "^2.0.0-rc.3" (extended), would install "8.2.13").
+Package "@ngrx/router" has an incompatible peer dependency to "@angular/platform-browser" (requires "^2.0.0-rc.3" (extended), would install "8.2.13").
+Package "@ngrx/router" has an incompatible peer dependency to "@angular/common" (requires "^2.0.0-rc.3" (extended), would install "8.2.13").
+Package "@ngrx/router" has an incompatible peer dependency to "@angular/compiler" (requires "^2.0.0-rc.3" (extended), would install "8.2.13").
 ...
 Incompatible peer dependencies found.
 Peer dependency warnings when installing dependencies means that those dependencies might not work correctly together.
@@ -329,6 +329,17 @@ You can use the '--force' option to ignore incompatible peer dependencies and in
 ```
 
 Used the force flage, so now Aunglar is at 8.2.14=3, but the *Could not find the implementation for builder @angular-devkit/build-angular:dev-server* error is still happening, both ng serve and npm start fail with the same message.
+
+Trying [this approach](https://thecodebuzz.com/resolved-could-not-find-the-implementation-for-builder-angular-devkit-build-angularbrowser/):
+```
+npm uninstall @angular-devkit/build-angular
+npm i --save-dev @angular-devkit/build-angular@latest
+ng update
+ng update @angular/cli @angular/core
+```
+
+This approach works, now both npm start and the prod build are back in action!
+
 
 
 
