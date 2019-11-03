@@ -386,7 +386,10 @@ Had to add /index.html to it and the page loads.  From the official Angular docs
 
 ### The Check for Update Service
 
-ng g s check-for-update
+ng g s services/check-for-update
+ng g s services/log-update
+ng g s services/prompt-update
+
 
 
 ### The links for the theme project
