@@ -37,9 +37,25 @@ ng test
 ng e2e
 ```
 
+### The PWA workflow
+
+Build the app first, then use [http-server](https://npmjs.com/package/http-server) to serve the app:
+```
+npm build --prod
+http-server -p 8080 -c-1 dist/angular-ngrx
+```
+
+Tip: When testing Angular service workers, it's a good idea to use an incognito or private window in your browser to ensure the service worker doesn't end up reading from a previous leftover state, which can cause unexpected behavior.
+
+Note: If you are not using HTTPS, the service worker will only be registered when accessing the app on localhost.
+
+
+
 ### Lib status
 
-Currently using Angular 7.2.14 and ngrx 8.2.0.
+
+Currently using Angular 8.2.13.
+I twas originally started with 7.2.14 and ngrx 8.2.0.
 
 
 
@@ -341,8 +357,36 @@ ng update @angular/cli @angular/core
 This approach works, now both npm start and the prod build are back in action!
 
 
+Next step in the PWA journey is to use [http-server](https://npmjs.com/package/http-server).
+
+Then we serve the app with that:
+```
+http-server -p 8080 -c-1 dist/angular-ngrx
+```
+
+Going to 8080 then caused this error:
+```
+ERR_INVALID_REDIRECT
+```
+
+Had to add /index.html to it and the page loads.  From the official Angular docs:
+*Tip: When testing service workers, use an incognito/private window to ensure the*
+*service worker doesn't end up reading from a previous leftover state, which can cause unexpected behavior.*
+
+*Note: If you are not using HTTPS, the service worker will only be registered when accessing the app on localhost.*0
+
+### Making changes to the PWA
 
 
+1. If using an incognito window, open a second blank tab (This will keep the incognito and the cache state alive).
+2. Close the application tab, but not the window. This should also close the Developer Tools.
+3. Shut down http-server.
+4. Build and run the server again.
+
+
+### The Check for Update Service
+
+ng g s check-for-update
 
 
 ### The links for the theme project
