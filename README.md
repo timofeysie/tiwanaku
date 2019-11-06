@@ -8,6 +8,7 @@ It provides an example of managing application state using Angular with Redux ba
 ## Table of contents
 
 1. [Workflow](#workflow)
+1. [Categories](#categories)
 1. [Deploying the PWA](#deploying-the-PWA)
 1. [Creating a theme service](#creating-a-theme-service)
 1. [Testing Redux in Angular](#testing-Redux-in-Angular)
@@ -59,7 +60,7 @@ I twas originally started with 7.2.14 and ngrx 8.2.0.
 
 
 
-## The category select
+## Categories
 
 Opened issue #14 to cover this.
 
@@ -110,11 +111,11 @@ export function formReducer(state: IFormState = getDefaultFormState(), action: A
 
 When running the app, the form select still needs some work.  It doesn't change and I'm thinking show the total number of results and a link to view them would be a decent feature.
 
-After doing a bit of UX thinking, what we want is a list-list-detail pattern that is keyboard navigatable both up and down/left and right, chunked lists and cached nicely with deep comparrisons for changed data.  It would also be nice to use variable fonts to dynamically adjust the text for its container.  As well, a kind of pwa dashboard to show cache and its state. Theres a whole list of to do items on a few of the projects, so this list here should be focused on just what is needed to implement the categories selection.  We can get back to inputting a new category ofter our switcher is finished.
+After doing a bit of UX thinking, what we want is a list-list-detail pattern that is keyboard navigatable both up and down/left and right, chunked lists and cached nicely with deep comparisons for changed data.  It would also be nice to use variable fonts to dynamically adjust the text for its container.  As well, a kind of pwa dashboard to show cache and its state. Theres a whole list of to do items on a few of the projects, so this list here should be focused on just what is needed to implement the categories selection.  We can get back to inputting a new category ofter our switcher is finished.
 
 The first task is a list of categories.  The selected category shows a list of its items on the right.  Press the right arrow key or select an item in the list with a mouse or a tap, and the categories shift left off screen and the item list shifts left to take the place of the categories and the item descriptions are shown on the right/  If you again move right, the item detail page is shown on the right0
 
-Chunking means that each list shows only a certain number per page.  Seven might be the magic number, but we will add a setting to adjust this.  We have ten fingures so that seems like a good idea to me.
+Chunking means that each list shows only a certain number per page.  Seven might be the magic number, but we will add a setting to adjust this.  We have ten fingers so that seems like a good idea to me.
   
 The next thing then is how to show the chunked sections.  Pagination?  Vertical scrolling without chunking?  No one wants to scroll thru a long list.  Currently there are 99 items on the cognitive bias list.  That's about 90 too many.  I think pagination, despite the amount of real estate it takes up on the screen is the go.  We will also want a text search at the top.
 
@@ -168,7 +169,8 @@ Firebase is a great option to both host the PWA app as well as provide a framewo
 
 But we're still in development here, so for now we might want to just use a static service to return a static list.
 
-To start the entity functionality can be duplicated as cateogries.  Then we will change it so that the selected category will become the values used to make the entity list call.
+To start the entity functionality can be duplicated as categories.  Then we will change it so that the selected category will become the values used to make the entity list call.
+
 
 
 ## Deploying the PWA
@@ -369,7 +371,9 @@ Going to 8080 then caused this error:
 ERR_INVALID_REDIRECT
 ```
 
-Had to add /index.html to it and the page loads.  From the official Angular docs:
+Had to add /index.html to it and the page loads.
+
+From the official Angular docs:
 *Tip: When testing service workers, use an incognito/private window to ensure the*
 *service worker doesn't end up reading from a previous leftover state, which can cause unexpected behavior.*
 
@@ -386,9 +390,19 @@ Had to add /index.html to it and the page loads.  From the official Angular docs
 
 ### The Check for Update Service
 
+Following [the official demo code](https://github.com/angular/angular/blob/master/aio/content/examples/service-worker-getting-started), created these providers.
+
+```
 ng g s services/check-for-update
 ng g s services/log-update
 ng g s services/prompt-update
+```
+
+
+<button id="check" (click)="updateCheck()">Check for Update</button>
+<p id="checkResult">{{updateCheckText}}</p>
+
+
 
 
 
@@ -397,12 +411,13 @@ Project Console: https://console.firebase.google.com/project/emperor-don-carlos/
 Hosting URL: https://emperor-don-carlos.firebaseapp.com
 
 
-[This deployment guid](https://itnext.io/build-a-production-ready-pwa-with-angular-and-firebase-8f2a69824fcc) describes a production ready PWA process in decent depth.
+[This deployment guide](https://itnext.io/build-a-production-ready-pwa-with-angular-and-firebase-8f2a69824fcc) describes a production ready PWA process in decent depth.
 
 
-### Caching strategy:
+### Caching strategies
 * performance (resources that don’t change often)
 * freshness (resources that change frequently)
+
 
 ### Asset groups
 * lazy strategy

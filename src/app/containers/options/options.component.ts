@@ -4,6 +4,7 @@ import { IAppState } from '../../store/state/app.state';
 import { IFormState } from '../../store/state/form.state';
 import { Store, select, Action } from '@ngrx/store';
 import { EntityService } from '../../services/entity.service';
+import { SwUpdate } from '@angular/service-worker';
 
 const themes = {
     autumn: {
@@ -38,7 +39,7 @@ const themes = {
   styleUrls: ['./options.component.css']
 })
 export class OptionsComponent implements OnInit {
-
+    updateCheckText = '';
     public formState: IFormState;
 
     /**
@@ -47,13 +48,21 @@ export class OptionsComponent implements OnInit {
     constructor(
         private theme: ThemeService,
         private store: Store<IAppState>,
-        private entityService: EntityService) {
+        private entityService: EntityService,
+        private update: SwUpdate) {
             this.store.pipe(select(e => e.form)).subscribe(fs => {
                 this.formState = fs;
         });
     }
 
     ngOnInit() { }
+
+    updateCheck(): void {
+        this.update
+            .checkForUpdate()
+            .then(() => this.updateCheckText = 'resolved')
+            .catch(err => this.updateCheckText = `rejected: ${err.message}`);
+    }
 
     onFormActions($event: Action[]) {
         // fallacies&wdt=P31&wd=Q186150

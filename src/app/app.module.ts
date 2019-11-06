@@ -27,6 +27,9 @@ import { OptionsComponent } from './containers/options/options.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormComponent } from './form/form.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { CheckForUpdateService } from './services/check-for-update.service';
+import { LogUpdateService } from './services/log-update.service';
+import { PromptUpdateService } from './services/prompt-update.service';
 
 @NgModule({
   declarations: [
@@ -57,7 +60,10 @@ import { ServiceWorkerModule } from '@angular/service-worker';
   providers: [
     EntityService,
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    ThemeService
+    ThemeService,
+    CheckForUpdateService,
+    LogUpdateService,
+    PromptUpdateService,
     ],
   bootstrap: [AppComponent]
 })

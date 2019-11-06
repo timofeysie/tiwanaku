@@ -17,3 +17,6 @@
   </div>
   <hr>
   <piotrek-form [form]="formState" (actionsEmitted)="onFormActions($event)"></piotrek-form>
+
+<button id="check" (click)="updateCheck()">Check for Update</button>
+<p id="checkResult">{{updateCheckText}}</p>
