@@ -41,15 +41,15 @@ export class EntityService implements OnInit {
   }
 
   // ?lang=en&category=fallacies&wdt=P31&wd=Q186150
-  getCategoryList(category: string, wdt: string, wd:string, language: string): Observable<IEntityHttp> {
-    let propertyValue = this.stateObj.getValue().config;
+  getCategoryList(category: string, wdt: string, wd: string, language: string): Observable<IEntityHttp> {
+    const propertyValue = this.stateObj.getValue().config;
     console.log('propertyValue',propertyValue);
     const params = `/lang=${language}&category=${category}&wdt=${wdt}&wd=${wd}`;
     return this._http.get<IEntityHttp>(this.strumosaUrl + this.lang);
   }
 
   getList(): Observable<IEntityHttp> {
-    let propertyValue = this.stateObj.getValue().config;
+    const propertyValue = this.stateObj.getValue().config;
     console.log('propertyValue',propertyValue);
     if (!this.lang) {
       this.lang = '/en';

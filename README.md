@@ -42,13 +42,21 @@ ng e2e
 
 Build the app first, then use [http-server](https://npmjs.com/package/http-server) to serve the app:
 ```
+ng build --prod
 npm build --prod
+npm run build --prod
 http-server -p 8080 -c-1 dist/angular-ngrx
 ```
 
-Tip: When testing Angular service workers, it's a good idea to use an incognito or private window in your browser to ensure the service worker doesn't end up reading from a previous leftover state, which can cause unexpected behavior.
+The app will be live at
+```
+http://127.0.0.1:8080
+```
 
-Note: If you are not using HTTPS, the service worker will only be registered when accessing the app on localhost.
+*Tip: Use an incognito or private window in your browser to ensure the service worker doesn't end up reading from a previous leftover state.*
+
+*Note: If you are not using HTTPS, the service worker will only be registered when accessing the app on localhost.*
+
 
 
 
