@@ -5,6 +5,7 @@ import { IFormState } from '../../store/state/form.state';
 import { Store, select, Action } from '@ngrx/store';
 import { EntityService } from '../../services/entity.service';
 import { SwUpdate } from '@angular/service-worker';
+import { LogUpdateService } from '../../services/log-update.service';
 
 const themes = {
     autumn: {
@@ -49,13 +50,16 @@ export class OptionsComponent implements OnInit {
         private theme: ThemeService,
         private store: Store<IAppState>,
         private entityService: EntityService,
+        private logUpdateService: LogUpdateService,
         private update: SwUpdate) {
             this.store.pipe(select(e => e.form)).subscribe(fs => {
                 this.formState = fs;
         });
     }
 
-    ngOnInit() { }
+    ngOnInit() { 
+      console.log('update event',this.logUpdateService.getEvent());
+    }
 
     updateCheck(): void {
         this.update

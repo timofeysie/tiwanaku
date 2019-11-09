@@ -1,21 +1,26 @@
 import { Injectable } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
 
-// #docregion sw-update
 @Injectable({
     providedIn: 'root'
 })
 export class LogUpdateService {
+  currentEvent: any;
 
   constructor(updates: SwUpdate) {
     updates.available.subscribe(event => {
       console.log('current version is', event.current);
       console.log('available version is', event.available);
+      this.currentEvent = event;
     });
     updates.activated.subscribe(event => {
       console.log('old version was', event.previous);
       console.log('new version is', event.current);
+      this.currentEvent = event;
     });
   }
+
+  getEvent() {
+    return this.currentEvent;
+  }
 }
-// #enddocregion sw-update

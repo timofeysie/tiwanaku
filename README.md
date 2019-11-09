@@ -50,7 +50,13 @@ http-server -p 8080 -c-1 dist/angular-ngrx
 
 The app will be live at
 ```
-http://127.0.0.1:8080
+http://127.0.0.1:8080/index.html
+```
+
+Use the CLI to build the app-shell target.
+```
+ng run angular-ngrx:app-shell
+ng run angular-ngrx:app-shell:production
 ```
 
 *Tip: Use an incognito or private window in your browser to ensure the service worker doesn't end up reading from a previous leftover state.*
@@ -406,11 +412,54 @@ ng g s services/log-update
 ng g s services/prompt-update
 ```
 
-
+It's used in a tem[;ate like this:
+```]
 <button id="check" (click)="updateCheck()">Check for Update</button>
 <p id="checkResult">{{updateCheckText}}</p>
+```
+
+There are two errors in the console:
+```
+core.js:6014 ERROR HttpErrorResponse {headers: HttpHeaders, status: 0, statusText: "Unknown Error", url: "http://localhost:4200/assets/data/config.json", ok: false, …}
+defaultErrorLogger @ core.js:6014
+handleError @ core.js:6066
+(anonymous) @ effects.js:238
+...
+zone-evergreen.js:2952 GET http://localhost:4200/assets/data/config.json net::ERR_CONNECTION_REFUSED
+```
+
+We do have that file, soo...
+```
+src\assets\data\config.json
+```
 
 
+### The app shell
+
+App shell is a way to render a portion of your application via a route at build time by quickly launching a static rendered page while the browser downloads the full client version and switches to it automatically after the code loads.  A meaningful first paint of the app.
+
+The [Angular docs on the app shell])(https://angular.io/guide/app-shell) shows the use of the CLI to get started with the on load route.
+```
+ng generate app-shell --client-project angular-ngrx --universal-project server-app
+```
+
+Use the CLI to build the app-shell target.
+```
+ng run angular-ngrx:app-shell
+ng run angular-ngrx:app-shell:production
+```
+
+Out of the box, there is this error:
+```
+ERROR in error TS6053: File 'C:/Users/timof/repos/temp/tiwanaku/src/src/main.server.ts' not found.
+```
+
+Had to remove the src part of the path in the tsconfig.server.json.
+
+Than, the next error:
+```
+Cannot read property 'moduleType' of undefined
+```
 
 
 

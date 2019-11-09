@@ -30,6 +30,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { CheckForUpdateService } from './services/check-for-update.service';
 import { LogUpdateService } from './services/log-update.service';
 import { PromptUpdateService } from './services/prompt-update.service';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,7 @@ import { PromptUpdateService } from './services/prompt-update.service';
     FormComponent
   ],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     HttpClientModule,
     StoreModule.forRoot(appReducers),
     EffectsModule.forRoot([EntityEffects, ConfigEffects]),
@@ -55,7 +56,8 @@ import { PromptUpdateService } from './services/prompt-update.service';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    RouterModule
   ],
   providers: [
     EntityService,
