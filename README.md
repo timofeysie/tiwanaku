@@ -124,13 +124,13 @@ After doing a bit of UX thinking, what we want is a list-list-detail pattern tha
 The first task is a list of categories.  The selected category shows a list of its items on the right.  Press the right arrow key or select an item in the list with a mouse or a tap, and the categories shift left off screen and the item list shifts left to take the place of the categories and the item descriptions are shown on the right/  If you again move right, the item detail page is shown on the right0
 
 Chunking means that each list shows only a certain number per page.  Seven might be the magic number, but we will add a setting to adjust this.  We have ten fingers so that seems like a good idea to me.
-  
+
 The next thing then is how to show the chunked sections.  Pagination?  Vertical scrolling without chunking?  No one wants to scroll thru a long list.  Currently there are 99 items on the cognitive bias list.  That's about 90 too many.  I think pagination, despite the amount of real estate it takes up on the screen is the go.  We will also want a text search at the top.
 
 So with this changes, we have a good idea of what the UI is going to look like, and what kind of UX we want to support.  Currently what we have is a select on the options page with a half finished form.  I think we should copy the current item list state and create another container component to be the left-most category list.
 
 First, breakfast.
- 
+
 1. Create the categories interface model.
 1. Create the categories interface http model.
 2. Create the categories component.
@@ -178,6 +178,35 @@ Firebase is a great option to both host the PWA app as well as provide a framewo
 But we're still in development here, so for now we might want to just use a static service to return a static list.
 
 To start the entity functionality can be duplicated as categories.  Then we will change it so that the selected category will become the values used to make the entity list call.
+
+
+There is a bit of a decision to make regarding the interface.
+
+Right now, it is pre-configured for the cognitive biases query:
+```
+interface IEntity {
+    cognitive_bias: string;
+    cognitive_biasDescription: string;
+    wikiMedia_description: string;
+    cognitive_biasLabel: string;
+    lang: string;
+}
+```
+
+What we really need is for entities itself to be query-agnostic.  Something like this:
+```
+interface IEntity {
+    category: string;
+    categoryDescription: string;
+    wikiMedia_description: string;
+    categoryLabel: string;
+    lang: string;
+}
+```
+
+Why does that look strange?  Then what should the category interface look like?
+
+The query is for a list of x.  
 
 
 
@@ -301,7 +330,7 @@ then every line after has red squigglies with the first one's tool tip saying:
 *A function whose declared type is neither 'void' nor 'any' must return a value.ts(2355)*
 
 So obviously TypeScript is not down with that.  [This SO answer](https://stackoverflow.com/questions/50311898/why-do-i-have-to-export-the-function-i-use-in-angular-appmodule-import-module) puts the problem well:
-*The issues you are having are due to the Ahead-of-Time (AOT) compiler in Angular.* 
+*The issues you are having are due to the Ahead-of-Time (AOT) compiler in Angular.*
 *By default, ng serve and ng build use the Just-in-Time (JIT) compiler.*
 *However, ng build --prod uses the AOT compiler. You can simulate this same behavior doing ng serve --aot.*
 *The AOT Collector does not support the arrow function syntax.
