@@ -23,7 +23,7 @@ export class CategoryEffects {
     map(action => action.payload),
     withLatestFrom(this._store.pipe(select(selectCategoryList))),
     switchMap(([cognitive_bias, categories]) => {
-          const selectedCategory = categories.filter(category => cateogry.cognitive_bias)[0];
+          const selectedCategory = categories.filter(category => category.cognitive_bias)[0];
           return of(new GetCategorySuccess(selectedCategory));
     })
 );
@@ -32,7 +32,7 @@ export class CategoryEffects {
   getCategories$ = this._actions$.pipe(
     ofType<GetCategories>(ECategoryActions.GetCategories),
     switchMap(() => this._categoryService.getOfflineList()),
-    switchMap((categoryHttp: ICategoryHttp) => of(new GetCatagoriesSuccess(categoryHttp.list)))
+    switchMap((categoryHttp: ICategoryHttp) => of(new GetCategoriesSuccess(categoryHttp.list)))
   );
 
   constructor(

@@ -26,7 +26,7 @@ export class CategoryService implements OnInit {
       this.config$.subscribe(config => {
           if (typeof config !== 'undefined' && config !== null) {
             if (typeof config.language !== 'undefined') {
-              this.lang = '/'+config.language;
+              this.lang = '/' + config.language;
             }
           }
       });
@@ -41,10 +41,11 @@ export class CategoryService implements OnInit {
   }
 
   // ?lang=en&category=fallacies&wdt=P31&wd=Q186150
+  // http://strumosa.azurewebsites.net/items?lang=en&category=fallacies&wdt=P31&wd=Q186150  
   getCategoryList(category: string, wdt: string, wd: string, language: string): Observable<ICategoryHttp> {
     const propertyValue = this.stateObj.getValue().config;
     console.log('propertyValue',propertyValue);
-    const params = `/lang=${language}&category=${category}&wdt=${wdt}&wd=${wd}`;
+    const params = `?lang=${language}&category=${category}&wdt=${wdt}&wd=${wd}`;
     return this._http.get<ICategoryHttp>(this.strumosaUrl + this.lang);
   }
 

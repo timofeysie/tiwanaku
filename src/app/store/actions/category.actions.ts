@@ -28,4 +28,4 @@ export class GetCategorySuccess implements Action {
 }
 
 /** TypeScript union type */
-export type CategoryActions = GetCategories | GetCategoriesSuccess | GetECategory | GetCategorySuccess;
+export type CategoryActions = GetCategories | GetCategoriesSuccess | GetCategory | GetCategorySuccess;
