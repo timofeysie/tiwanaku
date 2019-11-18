@@ -143,19 +143,21 @@ First, breakfast.
 2. Create the categories state.
 
 Wow, there is a lot of boilerplate to just sketch it out!  Moving on...
+There is also the Category Details Component, and a container component.
+
 
 Like our Entity actions, we can do this:
 ```
 Get Catagories
 Get Categories Success
 Get Category
-Get Categpry Success
+Get Category Success
 ```
 
 Reducers
 ```
-GetCatagoriesSuccess
-GetCatagorySuccess
+GetCategoriesSuccess
+GetCategorySuccess
 ```
 
 Selectors
@@ -179,6 +181,10 @@ But we're still in development here, so for now we might want to just use a stat
 
 To start the entity functionality can be duplicated as categories.  Then we will change it so that the selected category will become the values used to make the entity list call.
 
+The commit for [all these changes is here](https://github.com/timofeysie/tiwanaku/commit/7759ea84873e014d5791b0c10a9cbee3e34ebefa) and the next one fixed up some typos.
+
+
+### The category interface
 
 There is a bit of a decision to make regarding the interface.
 
@@ -206,7 +212,29 @@ interface IEntity {
 
 Why does that look strange?  Then what should the category interface look like?
 
-The query is for a list of x.  
+interface ICategory {
+    category: string;
+    language: string;
+    wdt: string;
+    wd: string;
+}
+
+This is everything needed to run the query is for a list of items in that category.  So a list of categories should have everything it needs to get it.
+
+There is of course a lot more than that.
+
+[Here is the list of fallacies WikiData page](https://www.wikidata.org/wiki/Q863221).
+[Here is the page](https://www.wikidata.org/wiki/Q8218825) for fallacies on WikiData.  
+
+The next thing we would want is an array of available languages.
+There is also the list of detail pages for the category in different languages.
+A list of translations of the category label in many languages, most of which say "	
+No label defined", so that's not very useful.
+There is also the Wikipedia page which as we know, is split into sub-categories.  For the previous version of this app, we have parsed the Wikipedia pages by hand for the organized items there and merged them with the WikiData list, indicating in some way which items are on both lists, or one or the other.  Until there is a better way to get the info we want from a Wikipedia page (ie until all the information contained in Wikipedia can be available in the WikiData format).
+
+Since our current need is just of items on the list, not details about the list itself, we can ignore all these for now.  We will want the same thing from items on the list, so if we want we could bring that functionality up to the category level later on.
+
+
 
 
 

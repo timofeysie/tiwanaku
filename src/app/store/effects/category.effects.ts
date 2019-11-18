@@ -23,7 +23,7 @@ export class CategoryEffects {
     map(action => action.payload),
     withLatestFrom(this._store.pipe(select(selectCategoryList))),
     switchMap(([cognitive_bias, categories]) => {
-          const selectedCategory = categories.filter(category => category.cognitive_bias)[0];
+          const selectedCategory = categories.filter(category => category.category)[0];
           return of(new GetCategorySuccess(selectedCategory));
     })
 );
