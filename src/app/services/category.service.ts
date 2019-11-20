@@ -1,6 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ICategoryHttp } from '../models/http-models/category-http.interface';
 import { Store, select } from '@ngrx/store';
@@ -37,11 +37,16 @@ export class CategoryService implements OnInit {
   }
 
   getCategories(): Observable<ICategoryHttp> {
-    return this._http.get<ICategoryHttp>(this.categoriesUrl);
+    return of<ICategoryHttp>({
+        category: '1',
+        language: '2',
+        wdt: '3',
+        wd: '4'
+      });
   }
 
   // ?lang=en&category=fallacies&wdt=P31&wd=Q186150
-  // http://strumosa.azurewebsites.net/items?lang=en&category=fallacies&wdt=P31&wd=Q186150  
+  // http://strumosa.azurewebsites.net/items?lang=en&category=fallacies&wdt=P31&wd=Q186150
   getCategoryList(category: string, wdt: string, wd: string, language: string): Observable<ICategoryHttp> {
     const propertyValue = this.stateObj.getValue().config;
     console.log('propertyValue',propertyValue);

@@ -228,13 +228,11 @@ There is of course a lot more than that.
 
 The next thing we would want is an array of available languages.
 There is also the list of detail pages for the category in different languages.
-A list of translations of the category label in many languages, most of which say "	
+A list of translations of the category label in many languages, most of which say "
 No label defined", so that's not very useful.
 There is also the Wikipedia page which as we know, is split into sub-categories.  For the previous version of this app, we have parsed the Wikipedia pages by hand for the organized items there and merged them with the WikiData list, indicating in some way which items are on both lists, or one or the other.  Until there is a better way to get the info we want from a Wikipedia page (ie until all the information contained in Wikipedia can be available in the WikiData format).
 
 Since our current need is just of items on the list, not details about the list itself, we can ignore all these for now.  We will want the same thing from items on the list, so if we want we could bring that functionality up to the category level later on.
-
-
 
 
 
