@@ -37,12 +37,13 @@ export class CategoryService implements OnInit {
   }
 
   getCategories(): Observable<ICategoryHttp> {
-    return of<ICategoryHttp>({
+    const cat = {
         category: '1',
         language: '2',
         wdt: '3',
         wd: '4'
-      });
+    }
+    return of<ICategoryHttp>(cat);
   }
 
   // ?lang=en&category=fallacies&wdt=P31&wd=Q186150
