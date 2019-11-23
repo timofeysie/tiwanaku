@@ -11,6 +11,20 @@ import * as wdk from 'wikidata-sdk';
 
 @Injectable()
 export class CategoryService implements OnInit {
+    cat: ICategoryHttp = {
+        list: [
+            {
+                category: '1',
+                language: '2',
+                wdt: '3',
+                wd: '4'
+            }, {
+                category: '5',
+                language: '2',
+                wdt: '3',
+                wd: '4'
+        }]
+    };
   stateObj;
   lang: string;
   config$ = this._store.pipe(select(selectConfig));
@@ -36,23 +50,14 @@ export class CategoryService implements OnInit {
     console.log('on init');
   }
 
-  getCategories(): Observable<ICategoryHttp> {
-    const cat = {
-        category: '1',
-        language: '2',
-        wdt: '3',
-        wd: '4'
-    }
-    return of<ICategoryHttp>(cat);
-  }
-
   // ?lang=en&category=fallacies&wdt=P31&wd=Q186150
   // http://strumosa.azurewebsites.net/items?lang=en&category=fallacies&wdt=P31&wd=Q186150
   getCategoryList(category: string, wdt: string, wd: string, language: string): Observable<ICategoryHttp> {
     const propertyValue = this.stateObj.getValue().config;
     console.log('propertyValue',propertyValue);
     const params = `?lang=${language}&category=${category}&wdt=${wdt}&wd=${wd}`;
-    return this._http.get<ICategoryHttp>(this.strumosaUrl + this.lang);
+    //return this._http.get<ICategoryHttp>(this.strumosaUrl + this.lang);
+    return of<ICategoryHttp>(this.cat);
   }
 
   getList(): Observable<ICategoryHttp> {
@@ -62,12 +67,11 @@ export class CategoryService implements OnInit {
       this.lang = '/en';
       console.log('used temp default')
     }
-    return this._http.get<ICategoryHttp>(this.backendListUrl + this.lang);
+    return of<ICategoryHttp>(this.cat);
   }
 
   getOfflineList(): Observable<Object> {
-    const list = this._http.get('../../assets/data/wikidata.json');
-    return list;
+    return of<ICategoryHttp>(this.cat);
   }
 
   /**
@@ -82,7 +86,7 @@ export class CategoryService implements OnInit {
             }
             ?${category} wdt:${wdt} wd:${wd}.
         }
-        LIMIT 1000`
+        LIMIT 1000`;
         return wdk.sparqlQuery(sparql);
   }
 

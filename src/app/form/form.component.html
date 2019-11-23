@@ -2,11 +2,11 @@
     <mat-form-field class="example-full-width">
         <input matInput
             placeholder="Go for it"
-            [formControl]="myForm.controls['category']"/>
-        <mat-error *ngIf="myForm.controls['category'].hasError('required')">
+            [formControl]="myForm.controls['categoryFG']"/>
+        <mat-error *ngIf="myForm.controls['categoryFG'].hasError('required')">
             Required!
         </mat-error>
-        <mat-error *ngIf="myForm.controls['category'].hasError('maxlength')">
+        <mat-error *ngIf="myForm.controls['categoryFG'].hasError('maxlength')">
             Too long!
         </mat-error>
     </mat-form-field>
@@ -16,10 +16,10 @@
     </div>
 
     <mat-form-field>
-      <mat-label>{{catObject.label}}</mat-label>
-      <mat-select>
-        <mat-option *ngFor="let category of categories" [value]="catObject.label">
-          {{category.label}}
+      <mat-label>{{catObject.category}}</mat-label>
+      <mat-select *ngIf="categories$">
+        <mat-option *ngFor="let category of categories" [value]="catObject.category">
+          <span *ngIf="category">{{category.category}}</span>
         </mat-option>
       </mat-select>
     </mat-form-field>

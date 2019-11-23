@@ -4,6 +4,10 @@ import { Action } from '@ngrx/store';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { IFormState } from '../store/state/form.state';
 import { formCategoryChanged, formSetValidity } from '../store/actions/form.actions';
+import { selectCategoryList } from '../store/selectors/category.selector';
+import { GetCategories } from '../store/actions/category.actions';
+import { Store, select } from '@ngrx/store';
+import { IAppState } from '../store/state/app.state';
 import { MatSelectModule } from '@angular/material';
 
 /**
@@ -15,25 +19,12 @@ import { MatSelectModule } from '@angular/material';
   styleUrls: ['./form.component.css']
 })
 export class FormComponent implements OnInit, OnChanges {
-    categories = [
-        {
-          label: 'cognitive_bias',
-          wdt: 'P31',
-          wd: 'Q29598',
-          language: 'en'
-        }, {
-          label: 'fallacies',
-          wdt: 'P31',
-          wd: 'Q186150',
-          language: 'en'
-      }
-    ];
+    categories = this._store.pipe(select(selectCategoryList));
     catObject = this.categories[0];
     @Input() form: IFormState = { isValid: false, isDirty: false };
     @Output() actionsEmitted: EventEmitter<Action[]> = new EventEmitter();
     @Output() formSubmitted: EventEmitter<{}> = new EventEmitter();
-
-    constructor() { }
+    constructor(private _store: Store<IAppState>) { }
 
     /**
      * micro-optimization:
@@ -41,7 +32,7 @@ export class FormComponent implements OnInit, OnChanges {
      * instead of every key press
      */
     myForm: FormGroup = new FormGroup({
-        category: new FormControl(this.form.category, {
+        categoryFG: new FormControl(this.form.category, {
             updateOn: 'blur',
             validators: [
                 Validators.required,
@@ -55,7 +46,9 @@ export class FormComponent implements OnInit, OnChanges {
     }
 
     ngOnInit() {
-        this.myForm.controls['category']
+        console.log('catObject', this.catObject);
+      this._store.dispatch(new GetCategories());
+        this.myForm.controls['categoryFG']
             .valueChanges.pipe(distinctUntilChanged())
             .subscribe((value) => {
                 this.actionsEmitted.emit([formCategoryChanged(value)]);

@@ -234,6 +234,27 @@ There is also the Wikipedia page which as we know, is split into sub-categories.
 
 Since our current need is just of items on the list, not details about the list itself, we can ignore all these for now.  We will want the same thing from items on the list, so if we want we could bring that functionality up to the category level later on.
 
+Next, the categories component template needs to be converted into a select and used on the options page.
+
+After a bit of work and typos, there is still a gap in our data model.  In the Chrome developer tools Redux plugin, we see this:
+```
+categories: {
+    categories: [
+    {
+        "cognitive_bias": "http://www.wikidata.org/entity/Q18570",
+        "cognitive_biasLabel": "Hawthorne effect",
+        "cognitive_biasDescription": "social phenomenon",
+        "lang": "en"
+    },
+```
+
+The observable state pattern is starting to look real good right now as a simpler alternative to Redux via NgRx!  But then we wouldn't be able to use the wonderful Redux inspector plugin to see the problem in the state clearly.  
+
+The initial property should be list, as it's redundant to write categories.categories.  It should be list.categories.  Anyhow, it is the same for Entities.  
+
+Now that the state is the correct objects, they still are not making it into the select on the options page.  The entities are shown in the container/presenter pattern, which in the case of the for, isn't being used right now.  We do have the unused category container and component classes.
+
+
 
 
 ## Deploying the PWA
