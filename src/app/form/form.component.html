@@ -17,7 +17,7 @@
 
     <mat-form-field>
       <mat-label>{{catObject.category}}</mat-label>
-      <mat-select *ngIf="categories$">
+      <mat-select *ngIf="categories">
         <mat-option *ngFor="let category of categories" [value]="catObject.category">
           <span *ngIf="category">{{category.category}}</span>
         </mat-option>
@@ -25,4 +25,6 @@
     </mat-form-field>
 
 </form>
+<p>Stuff</p>
 <p>Form: {{form | json}}</p>
+<p>Categories {{categories | json}}</p>

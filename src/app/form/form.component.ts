@@ -9,6 +9,7 @@ import { GetCategories } from '../store/actions/category.actions';
 import { Store, select } from '@ngrx/store';
 import { IAppState } from '../store/state/app.state';
 import { MatSelectModule } from '@angular/material';
+import { ICategory } from '../models/category.interface';
 
 /**
 *lang=en&category=fallacies&wdt=P31&wd=Q186150
@@ -19,8 +20,8 @@ import { MatSelectModule } from '@angular/material';
   styleUrls: ['./form.component.css']
 })
 export class FormComponent implements OnInit, OnChanges {
-    categories = this._store.pipe(select(selectCategoryList));
-    catObject = this.categories[0];
+    @Input() categories: ICategory[];
+    catObject: any;
     @Input() form: IFormState = { isValid: false, isDirty: false };
     @Output() actionsEmitted: EventEmitter<Action[]> = new EventEmitter();
     @Output() formSubmitted: EventEmitter<{}> = new EventEmitter();
@@ -46,6 +47,7 @@ export class FormComponent implements OnInit, OnChanges {
     }
 
     ngOnInit() {
+        this.catObject = this.categories[0];
         console.log('catObject', this.catObject);
       this._store.dispatch(new GetCategories());
         this.myForm.controls['categoryFG']

@@ -5,6 +5,7 @@ import { IFormState } from '../../store/state/form.state';
 import { Store, select, Action } from '@ngrx/store';
 import { EntityService } from '../../services/entity.service';
 import { SwUpdate } from '@angular/service-worker';
+import { selectCategoryList } from '../../store/selectors/category.selector';
 
 const themes = {
     autumn: {
@@ -39,6 +40,7 @@ const themes = {
   styleUrls: ['./options.component.css']
 })
 export class OptionsComponent implements OnInit {
+    categories$ = this._store.pipe(select(selectCategoryList));
     updateCheckText = '';
     public formState: IFormState;
 
@@ -49,7 +51,8 @@ export class OptionsComponent implements OnInit {
         private theme: ThemeService,
         private store: Store<IAppState>,
         private entityService: EntityService,
-        private update: SwUpdate) {
+        private update: SwUpdate,
+        private _store: Store<IAppState>) {
             this.store.pipe(select(e => e.form)).subscribe(fs => {
                 this.formState = fs;
         });
