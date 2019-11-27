@@ -393,6 +393,7 @@ From the official Angular docs:
 
 *Note: If you are not using HTTPS, the service worker will only be registered when accessing the app on localhost.*0
 
+
 ### Making changes to the PWA
 
 
@@ -460,6 +461,28 @@ Than, the next error:
 ```
 Cannot read property 'moduleType' of undefined
 ```
+
+It doesn't actually do anything yet.  Add that to the list of errors.
+
+
+### Service workers are disabled or not supported by this browser
+
+This would happen apparently if we used ng serve.  But we are not using ng-serve.  We are doing this:
+```
+http-server -p 8080 -c-1 dist/angular-ngrx
+Starting up http-server, serving dist/angular-ngrx
+Available on:
+  http://192.168.1.4:8080
+```
+
+http://127.0.0.1:8080/entities doesn't work.  We have to go to index.html, and he app runs, but not the service worker.
+
+Remember out own Note: 
+*If you are not using HTTPS, the service worker will only be registered when accessing the app on localhost.*
+
+However, using localhost has the same result, and we're not using https.
+
+What happens with Emporer Don Carlos?
 
 
 
